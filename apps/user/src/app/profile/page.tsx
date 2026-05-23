@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { currentUser, monthlyStats, achievements, recentActivities, weeklyChartData } from "@tn/shared/data/mock";
 import Card from "@tn/shared/components/ui/Card";
@@ -8,7 +9,7 @@ import ProgressRing from "@tn/shared/components/ui/ProgressRing";
 import {
   MapPin, Calendar, CheckCircle2, TrendingUp,
   Flame, Footprints, Zap as ZapIcon, Activity,
-  Clock, Route
+  Clock, Route, LogOut
 } from "lucide-react";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -22,6 +23,17 @@ import {
 export default function ProfilePage() {
   const user = currentUser;
   const stats = monthlyStats;
+
+  useEffect(() => {
+    if (!document.cookie.includes("user_auth=true")) {
+      window.location.href = "/auth";
+    }
+  }, []);
+
+  const handleLogout = () => {
+    document.cookie = "user_auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    window.location.href = "/";
+  };
 
   const statCards = [
     {
@@ -86,6 +98,13 @@ export default function ProfilePage() {
                     {user.name}
                   </h1>
                   {user.isVerified && <CheckCircle2 className="w-5 h-5 text-primary" />}
+                  <button 
+                    onClick={handleLogout}
+                    className="ml-2 p-1.5 text-text-secondary-light hover:text-danger dark:text-text-secondary-dark dark:hover:text-danger transition-colors rounded-lg hover:bg-danger/10"
+                    title="Logout"
+                  >
+                    <LogOut className="w-5 h-5" />
+                  </button>
                 </div>
                 <div className="flex items-center justify-center sm:justify-start gap-4 text-sm text-text-secondary-light dark:text-text-secondary-dark mb-3">
                   <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" />{user.district}</span>

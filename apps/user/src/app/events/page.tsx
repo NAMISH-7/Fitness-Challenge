@@ -6,6 +6,7 @@ import { events } from "@tn/shared/data/mock";
 import Card from "@tn/shared/components/ui/Card";
 import Badge from "@tn/shared/components/ui/Badge";
 import Button from "@tn/shared/components/ui/Button";
+import Link from "next/link";
 import {
   Calendar, MapPin, Users, ArrowRight, Clock,
   Trophy, Megaphone, Monitor, GraduationCap, ChevronLeft, ChevronRight
@@ -115,9 +116,11 @@ export default function EventsPage() {
                     <span className="flex items-center gap-1"><MapPin className="w-4 h-4" />{featuredEvents[currentEventIdx].location}</span>
                     <span className="flex items-center gap-1"><Users className="w-4 h-4" />{featuredEvents[currentEventIdx].participantCount.toLocaleString()} joined</span>
                   </div>
-                  <Button className="!bg-white !text-gray-900 hover:!bg-gray-100 shadow-xl border-none">
-                    Register Now <ArrowRight className="w-4 h-4" />
-                  </Button>
+                  <Link href={`/events/${featuredEvents[currentEventIdx].id}`}>
+                    <Button className="!bg-white !text-gray-900 hover:!bg-gray-100 shadow-xl border-none">
+                      View Details <ArrowRight className="w-4 h-4 ml-1" />
+                    </Button>
+                  </Link>
                 </motion.div>
               </AnimatePresence>
               
@@ -225,9 +228,11 @@ export default function EventsPage() {
                   </div>
 
                   {event.status !== "completed" && (
-                    <Button variant="outline" size="sm" className="w-full mt-4">
-                      Register <ArrowRight className="w-3.5 h-3.5" />
-                    </Button>
+                    <Link href={`/events/${event.id}`} className="w-full mt-4 block">
+                      <Button variant="outline" size="sm" className="w-full">
+                        View Details <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                      </Button>
+                    </Link>
                   )}
                 </div>
               </Card>

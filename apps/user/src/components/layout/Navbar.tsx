@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Trophy, User, Calendar, Info, LayoutDashboard, Zap, Bell } from "lucide-react";
 import ThemeToggle from "@tn/shared/components/ui/ThemeToggle";
@@ -17,6 +17,14 @@ const navLinks = [
 export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Check for mock auth cookie on mount
+    if (document.cookie.includes("user_auth=true")) {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   // Don't show navbar on admin page (it has its own sidebar)
   if (pathname === "/admin") return null;
@@ -60,12 +68,22 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             <ThemeToggle />
 
-            <Link
-              href="/auth"
-              className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-primary text-white hover:bg-primary-dark shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 hover:-translate-y-0.5"
-            >
-              Join Challenge
-            </Link>
+            {isAuthenticated ? (
+              <Link
+                href="/dashboard"
+                className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-surface-light-alt dark:bg-surface-dark-alt text-text-primary-light dark:text-text-primary-dark hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 border border-border-light dark:border-border-dark"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                Dashboard
+              </Link>
+            ) : (
+              <Link
+                href="/auth"
+                className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-primary text-white hover:bg-primary-dark shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 hover:-translate-y-0.5"
+              >
+                Join Challenge
+              </Link>
+            )}
 
 
 
@@ -82,24 +100,26 @@ export default function Navbar() {
       </div>
 
       {/* Absolute Far Right User Actions */}
-      <div className="absolute right-4 sm:right-6 lg:right-8 top-1/2 -translate-y-1/2 flex items-center gap-3">
-        {/* Notification Bell */}
-        <button
-          className="w-9 h-9 rounded-full flex items-center justify-center text-text-secondary-light dark:text-text-secondary-dark hover:text-primary transition-colors cursor-pointer"
-          aria-label="Notifications"
-        >
-          <Bell className="w-5 h-5" />
-        </button>
+      {isAuthenticated && (
+        <div className="absolute right-4 sm:right-6 lg:right-8 top-1/2 -translate-y-1/2 flex items-center gap-3">
+          {/* Notification Bell */}
+          <button
+            className="w-9 h-9 rounded-full flex items-center justify-center text-text-secondary-light dark:text-text-secondary-dark hover:text-primary transition-colors cursor-pointer"
+            aria-label="Notifications"
+          >
+            <Bell className="w-5 h-5" />
+          </button>
 
-        {/* Profile Avatar */}
-        <Link
-          href="/profile"
-          className="w-9 h-9 rounded-full overflow-hidden border border-border-light dark:border-border-dark flex items-center justify-center bg-surface-light dark:bg-surface-dark hover:border-primary transition-colors cursor-pointer shadow-sm"
-          aria-label="Profile"
-        >
-          <User className="w-5 h-5 text-text-secondary-light dark:text-text-secondary-dark" />
-        </Link>
-      </div>
+          {/* Profile Avatar */}
+          <Link
+            href="/profile"
+            className="w-9 h-9 rounded-full overflow-hidden border border-border-light dark:border-border-dark flex items-center justify-center bg-surface-light dark:bg-surface-dark hover:border-primary transition-colors cursor-pointer shadow-sm"
+            aria-label="Profile"
+          >
+            <User className="w-5 h-5 text-text-secondary-light dark:text-text-secondary-dark" />
+          </Link>
+        </div>
+      )}
 
       {/* Mobile Menu */}
       <AnimatePresence>
@@ -132,13 +152,24 @@ export default function Navbar() {
                   </Link>
                 );
               })}
-              <Link
-                href="/auth"
-                onClick={() => setIsOpen(false)}
-                className="flex items-center justify-center gap-2 px-4 py-3 mt-2 rounded-xl text-sm font-semibold bg-primary text-white hover:bg-primary-dark transition-all"
-              >
-                Join Challenge
-              </Link>
+              {isAuthenticated ? (
+                <Link
+                  href="/dashboard"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center justify-center gap-2 px-4 py-3 mt-2 rounded-xl text-sm font-semibold bg-surface-light-alt dark:bg-surface-dark-alt border border-border-light dark:border-border-dark transition-all"
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  Dashboard
+                </Link>
+              ) : (
+                <Link
+                  href="/auth"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center justify-center gap-2 px-4 py-3 mt-2 rounded-xl text-sm font-semibold bg-primary text-white hover:bg-primary-dark transition-all"
+                >
+                  Join Challenge
+                </Link>
+              )}
             </div>
           </motion.div>
         )}

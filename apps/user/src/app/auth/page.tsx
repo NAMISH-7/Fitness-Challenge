@@ -15,7 +15,21 @@ import Link from "next/link";
 
 export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleAuth = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    // Mock API delay
+    setTimeout(() => {
+      // Set a simple cookie to indicate authentication for the user app
+      document.cookie = "user_auth=true; path=/; max-age=86400";
+      // Force a full reload to the dashboard
+      window.location.href = "/dashboard";
+    }, 800);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden pt-16 pb-8 px-4">
@@ -97,7 +111,7 @@ export default function AuthPage() {
           </div>
 
           {/* Form */}
-          <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+          <form className="space-y-4" onSubmit={handleAuth}>
             {isSignUp && (
               <Input
                 label="Full Name"
@@ -141,8 +155,15 @@ export default function AuthPage() {
               </div>
             )}
 
-            <Button type="submit" className="w-full" size="lg">
-              {isSignUp ? "Create Account" : "Sign In"}
+            <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
+              {isLoading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  {isSignUp ? "Creating Account..." : "Signing In..."}
+                </div>
+              ) : (
+                isSignUp ? "Create Account" : "Sign In"
+              )}
             </Button>
           </form>
 
