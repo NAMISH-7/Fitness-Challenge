@@ -6,9 +6,12 @@ import { Trophy, Activity, Flame, Plus, MapPin, Calendar, CheckCircle2, LogOut }
 import Card from "@tn/shared/components/ui/Card";
 import Button from "@tn/shared/components/ui/Button";
 import Input from "@tn/shared/components/ui/Input";
+import Link from "next/link";
 import Badge from "@tn/shared/components/ui/Badge";
-import { currentUser } from "@tn/shared/data/mock";
+import { currentUser, events } from "@tn/shared/data/mock";
 import AnimatedCounter from "@tn/shared/components/ui/AnimatedCounter";
+import { useEventStore } from "@/store/useEventStore";
+import { useActivityStore } from "@/store/useActivityStore";
 
 // Use the main currentUser mock
 const user = currentUser;
@@ -16,7 +19,18 @@ const user = currentUser;
 export default function DashboardPage() {
   const [showLogModal, setShowLogModal] = useState(false);
   const [logDistance, setLogDistance] = useState("");
+  const [logType, setLogType] = useState("Run");
+  const [logDate, setLogDate] = useState(new Date().toISOString().split('T')[0]);
   const [logSuccess, setLogSuccess] = useState(false);
+
+  const { registeredEventIds, unregisterEvent } = useEventStore();
+  const { activities, addActivity } = useActivityStore();
+
+  const totalDistance = user.distanceKm + activities.reduce((acc, curr) => acc + curr.distance, 0);
+
+  const registeredEvents = events.filter((e) =>
+    registeredEventIds.includes(e.id) && (e.status === "upcoming" || e.status === "ongoing")
+  );
 
   useEffect(() => {
     if (!document.cookie.includes("user_auth=true")) {
@@ -28,12 +42,18 @@ export default function DashboardPage() {
     e.preventDefault();
     if (!logDistance) return;
     
-    // Mock logging success
+    addActivity({
+      type: logType,
+      distance: parseFloat(logDistance),
+      date: logDate,
+    });
+
     setLogSuccess(true);
     setTimeout(() => {
       setLogSuccess(false);
       setShowLogModal(false);
       setLogDistance("");
+      setLogType("Run");
     }, 2000);
   };
 
@@ -89,7 +109,7 @@ export default function DashboardPage() {
               </div>
               <p className="text-text-secondary-light dark:text-text-secondary-dark text-sm mb-1">Total Distance</p>
               <h2 className="text-4xl font-bold text-text-primary-light dark:text-text-primary-dark">
-                <AnimatedCounter value={user.distanceKm} /> <span className="text-xl text-text-secondary-light dark:text-text-secondary-dark font-normal">km</span>
+                <AnimatedCounter value={totalDistance} /> <span className="text-xl text-text-secondary-light dark:text-text-secondary-dark font-normal">km</span>
               </h2>
             </Card>
           </motion.div>
@@ -124,6 +144,46 @@ export default function DashboardPage() {
           </motion.div>
         </div>
 
+        {/* Active & Upcoming Events */}
+        {registeredEvents.length > 0 && (
+          <div className="mb-12">
+            <h3 className="text-xl font-bold text-text-primary-light dark:text-text-primary-dark mb-6">
+              My Active & Upcoming Events
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {registeredEvents.map((event) => (
+                <Card key={event.id} padding="md" variant="glass" className="flex flex-col h-full border-l-4 border-l-primary relative overflow-hidden">
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-2">
+                      <Badge variant={event.status === "ongoing" ? "success" : "primary"} size="sm">
+                        {event.status.toUpperCase()}
+                      </Badge>
+                      <span className="text-xs text-text-secondary-light dark:text-text-secondary-dark">{event.type}</span>
+                    </div>
+                    <h4 className="font-bold text-lg mb-2 text-text-primary-light dark:text-text-primary-dark">{event.title}</h4>
+                    <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark flex items-center gap-2 mb-1">
+                      <Calendar className="w-3.5 h-3.5" /> {event.date}
+                    </p>
+                    <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark flex items-center gap-2">
+                      <MapPin className="w-3.5 h-3.5" /> {event.location}
+                    </p>
+                  </div>
+                  <div className="mt-4 flex gap-2 w-full">
+                    <div className="flex-1">
+                      <Button variant="outline" size="sm" className="w-full text-danger border-danger/30 hover:bg-danger/10" onClick={() => unregisterEvent(event.id)}>
+                        Unregister
+                      </Button>
+                    </div>
+                    <Link href={`/events/${event.id}`} className="flex-1">
+                      <Button size="sm" className="w-full">Details</Button>
+                    </Link>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Heatmap / Activity Feed Placeholder */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
@@ -154,21 +214,25 @@ export default function DashboardPage() {
                 Recent Activities
               </h3>
               <div className="space-y-4">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="flex items-center gap-4 p-3 rounded-xl bg-surface-light-alt dark:bg-surface-dark-alt">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Activity className="w-5 h-5 text-primary" />
+                {activities.length > 0 ? (
+                  activities.slice(0, 3).map((activity) => (
+                    <div key={activity.id} className="flex items-center gap-4 p-3 rounded-xl bg-surface-light-alt dark:bg-surface-dark-alt">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Activity className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-text-primary-light dark:text-text-primary-dark">
+                          {activity.type}
+                        </p>
+                        <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
+                          {activity.distance} km • {activity.date}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-semibold text-text-primary-light dark:text-text-primary-dark">
-                        Morning Run
-                      </p>
-                      <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
-                        {5 + i}.2 km • {i} days ago
-                      </p>
-                    </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark text-center py-4">No recent activities logged.</p>
+                )}
               </div>
             </Card>
           </div>
@@ -215,18 +279,39 @@ export default function DashboardPage() {
                   </div>
                   <form onSubmit={handleLogActivity} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
-                      <Button type="button" variant="outline" className="border-primary text-primary">Run</Button>
-                      <Button type="button" variant="outline" className="border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark">Cycle</Button>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={() => setLogType("Run")}
+                        className={logType === "Run" ? "border-primary text-primary" : "border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark"}
+                      >
+                        Run
+                      </Button>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={() => setLogType("Cycle")}
+                        className={logType === "Cycle" ? "border-primary text-primary" : "border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark"}
+                      >
+                        Cycle
+                      </Button>
                     </div>
                     <Input 
                       label="Distance (km)" 
                       type="number" 
+                      step="0.1"
                       placeholder="e.g. 5.2" 
                       value={logDistance}
                       onChange={(e) => setLogDistance(e.target.value)}
                       required
                     />
-                    <Input label="Date" type="date" defaultValue={new Date().toISOString().split('T')[0]} />
+                    <Input 
+                      label="Date" 
+                      type="date" 
+                      value={logDate}
+                      onChange={(e) => setLogDate(e.target.value)}
+                      required 
+                    />
                     <Button type="submit" className="w-full mt-4" size="lg">Save Activity</Button>
                   </form>
                 </>

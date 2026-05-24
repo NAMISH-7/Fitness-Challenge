@@ -42,7 +42,7 @@ export interface Event {
   endDate?: string;
   location: string;
   type: "marathon" | "campus" | "awareness" | "virtual";
-  image: string;
+  image?: string;
   participantCount: number;
   maxParticipants?: number;
   isFeatured: boolean;
@@ -84,6 +84,10 @@ export interface Sponsor {
   tier: "platinum" | "gold" | "silver";
   logo: string;
   status: "active" | "pending" | "expired";
+  joinDate: string;
+  duration: string;
+  description: string;
+  contribution: string;
 }
 
 // --- Tamil Nadu Districts ---
@@ -184,7 +188,6 @@ export const events: Event[] = [
     date: "2026-07-15",
     location: "Marina Beach, Chennai",
     type: "marathon",
-    image: "/events/marathon.jpg",
     participantCount: 2400,
     maxParticipants: 5000,
     isFeatured: true,
@@ -198,7 +201,6 @@ export const events: Event[] = [
     endDate: "2026-06-17",
     location: "VIT Vellore Campus",
     type: "campus",
-    image: "/events/campus.jpg",
     participantCount: 680,
     isFeatured: false,
     status: "upcoming",
@@ -210,7 +212,6 @@ export const events: Event[] = [
     date: "2026-04-07",
     location: "All Districts",
     type: "awareness",
-    image: "/events/walkathon.jpg",
     participantCount: 12000,
     isFeatured: false,
     status: "completed",
@@ -223,7 +224,6 @@ export const events: Event[] = [
     endDate: "2026-06-30",
     location: "Virtual — Anywhere in TN",
     type: "virtual",
-    image: "/events/virtual.jpg",
     participantCount: 3200,
     maxParticipants: 10000,
     isFeatured: true,
@@ -237,7 +237,6 @@ export const events: Event[] = [
     endDate: "2026-08-27",
     location: "Anna University, Chennai",
     type: "campus",
-    image: "/events/fest.jpg",
     participantCount: 450,
     isFeatured: false,
     status: "upcoming",
@@ -249,7 +248,6 @@ export const events: Event[] = [
     date: "2026-09-12",
     location: "VOC Park, Coimbatore",
     type: "marathon",
-    image: "/events/cityrun.jpg",
     participantCount: 1800,
     maxParticipants: 3000,
     isFeatured: false,
@@ -262,7 +260,6 @@ export const events: Event[] = [
     date: "2026-11-14",
     location: "Madurai",
     type: "awareness",
-    image: "/events/awareness.jpg",
     participantCount: 0,
     isFeatured: false,
     status: "upcoming",
@@ -275,7 +272,6 @@ export const events: Event[] = [
     endDate: "2026-07-31",
     location: "NIT Trichy Stadium",
     type: "campus",
-    image: "/events/sprint.jpg",
     participantCount: 320,
     isFeatured: false,
     status: "upcoming",
@@ -349,14 +345,14 @@ export const adminStats: AdminStats = {
 
 // === Sponsors ===
 export const sponsors: Sponsor[] = [
-  { id: "sp-1", name: "TN Sports Authority", tier: "platinum", logo: "🏛️", status: "active" },
-  { id: "sp-2", name: "HealthFirst Insurance", tier: "platinum", logo: "🏥", status: "active" },
-  { id: "sp-3", name: "FitGear India", tier: "gold", logo: "👟", status: "active" },
-  { id: "sp-4", name: "NutriLife Foods", tier: "gold", logo: "🥗", status: "active" },
-  { id: "sp-5", name: "TechRun Wearables", tier: "silver", logo: "⌚", status: "active" },
-  { id: "sp-6", name: "Chennai Runners Club", tier: "silver", logo: "🏃", status: "pending" },
-  { id: "sp-7", name: "EcoSport Drinks", tier: "silver", logo: "🥤", status: "active" },
-  { id: "sp-8", name: "MedPlus Pharmacy", tier: "gold", logo: "💊", status: "expired" },
+  { id: "sp-1", name: "TN Sports Authority", tier: "platinum", logo: "🏛️", status: "active", joinDate: "15 Jan 2025", duration: "5 Years", description: "Official government partner for all district-level sports events and marathons.", contribution: "₹1,50,00,000 + Infrastructure Support" },
+  { id: "sp-2", name: "HealthFirst Insurance", tier: "platinum", logo: "🏥", status: "active", joinDate: "20 Feb 2025", duration: "3 Years", description: "Providing comprehensive health coverage and medical camps for all registered participants.", contribution: "₹75,00,000 + Medical Kits" },
+  { id: "sp-3", name: "FitGear India", tier: "gold", logo: "👟", status: "active", joinDate: "10 Mar 2025", duration: "1 Year", description: "Supplying official merchandise, t-shirts, and running gear for marathon finishers.", contribution: "₹25,00,000 + Merchandise" },
+  { id: "sp-4", name: "NutriLife Foods", tier: "gold", logo: "🥗", status: "active", joinDate: "05 Apr 2025", duration: "2 Years", description: "Providing energy bars, hydration stations, and nutritional guidance across all major events.", contribution: "₹30,00,000" },
+  { id: "sp-5", name: "TechRun Wearables", tier: "silver", logo: "⌚", status: "active", joinDate: "12 May 2025", duration: "1 Year", description: "Offering discounted smartwatches to verified college participants to encourage daily tracking.", contribution: "₹10,00,000 + 500 Smartwatches" },
+  { id: "sp-6", name: "Chennai Runners Club", tier: "silver", logo: "🏃", status: "pending", joinDate: "01 Jun 2025", duration: "1 Year", description: "A local community club organizing pacing teams and volunteer support for Sunday runs.", contribution: "Volunteer Support" },
+  { id: "sp-7", name: "EcoSport Drinks", tier: "silver", logo: "🥤", status: "active", joinDate: "15 Jun 2025", duration: "6 Months", description: "Supplying eco-friendly, biodegradable water cups and electrolyte drinks for the summer series.", contribution: "₹5,00,000 + Beverages" },
+  { id: "sp-8", name: "MedPlus Pharmacy", tier: "gold", logo: "💊", status: "expired", joinDate: "10 Jan 2024", duration: "1 Year", description: "Provided first-aid stations and emergency medical vehicles during the 2024 fitness drive.", contribution: "₹20,00,000" },
 ];
 
 // === User Profile (current user mock) ===

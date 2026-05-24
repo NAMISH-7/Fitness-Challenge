@@ -1,17 +1,21 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import AdminSidebar from "@/components/layout/AdminSidebar";
 import Card from "@tn/shared/components/ui/Card";
 import Badge from "@tn/shared/components/ui/Badge";
 import Button from "@tn/shared/components/ui/Button";
 import AnimatedCounter from "@tn/shared/components/ui/AnimatedCounter";
 import {
-  adminStats, participants, events, sponsors, monthlyUserGrowth,
+  adminStats, participants, events, sponsors, monthlyUserGrowth, type Sponsor
 } from "@tn/shared/data/mock";
+import AddSponsorModal from "@/components/sponsors/AddSponsorModal";
 import {
   Users, Activity, Route, Calendar, TrendingUp, Search,
   MoreHorizontal, Plus, CheckCircle2, Clock, XCircle,
+  Landmark, Info, X
 } from "lucide-react";
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -24,7 +28,22 @@ import {
 // TODO: [FUTURE] Add sponsor payment integration
 // TODO: [FUTURE] Add event creation/editing forms
 
-export default function AdminPage() {
+export default function AdminDashboard() {
+  const [localSponsors, setLocalSponsors] = useState<Sponsor[]>(sponsors);
+  const [selectedSponsor, setSelectedSponsor] = useState<Sponsor | null>(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleAddSponsor = (sponsorData: Omit<Sponsor, "id">, id?: string) => {
+    // Dashboard only supports adding, but we accept the signature
+    const newSponsor = { id: `sp-${Date.now()}`, ...sponsorData };
+    // Check if it already exists to be safe in StrictMode
+    if (!sponsors.find(s => s.id === newSponsor.id)) {
+      sponsors.push(newSponsor); 
+    }
+    setLocalSponsors([...sponsors]);
+  };
+
   const analyticsCards = [
     {
       title: "Total Users",
@@ -84,9 +103,11 @@ export default function AdminPage() {
               Welcome back, Admin. Here&apos;s what&apos;s happening today.
             </p>
           </div>
-          <Button size="sm">
-            <Plus className="w-4 h-4" /> Create Event
-          </Button>
+          <Link href="/events/create">
+            <Button size="sm">
+              <Plus className="w-4 h-4" /> Create Event
+            </Button>
+          </Link>
         </motion.div>
 
         {/* Analytics Cards */}
@@ -280,15 +301,16 @@ export default function AdminPage() {
               <h3 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
                 Sponsor Management
               </h3>
-              <Button variant="outline" size="sm">
-                <Plus className="w-3.5 h-3.5" /> Add Sponsor
+              <Button variant="outline" size="sm" onClick={() => setIsAddModalOpen(true)}>
+                <Plus className="w-3.5 h-3.5 mr-1" /> Add Sponsor
               </Button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {sponsors.map((sponsor) => (
+              {localSponsors.map((sponsor) => (
                 <div
                   key={sponsor.id}
-                  className="p-4 rounded-xl border border-border-light dark:border-border-dark hover:border-primary/30 transition-all duration-200"
+                  onClick={() => setSelectedSponsor(sponsor)}
+                  className="p-4 rounded-xl border border-border-light dark:border-border-dark hover:border-primary/30 transition-all duration-200 cursor-pointer"
                 >
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-3xl">{sponsor.logo}</span>
@@ -323,6 +345,92 @@ export default function AdminPage() {
           </Card>
         </motion.div>
       </div>
+
+      <AnimatePresence>
+        {selectedSponsor && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="w-full max-w-lg"
+            >
+              <Card padding="lg" className="relative overflow-hidden">
+                <button 
+                  onClick={() => setSelectedSponsor(null)}
+                  className="absolute top-4 right-4 p-2 rounded-full hover:bg-surface-light-alt dark:hover:bg-surface-dark-alt text-text-secondary-light dark:text-text-secondary-dark transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-16 h-16 bg-surface-light-alt dark:bg-surface-dark-alt rounded-2xl flex items-center justify-center border border-border-light dark:border-border-dark text-3xl">
+                    {selectedSponsor.logo}
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark">
+                      {selectedSponsor.name}
+                    </h2>
+                    <div className="flex gap-2 mt-1">
+                      <Badge variant={selectedSponsor.status === 'active' ? 'success' : selectedSponsor.status === 'pending' ? 'warning' : 'danger'}>
+                        {selectedSponsor.status.toUpperCase()}
+                      </Badge>
+                      <Badge variant={selectedSponsor.tier === "platinum" ? "primary" : selectedSponsor.tier === "gold" ? "gold" : "silver"} className="capitalize">
+                        {selectedSponsor.tier} Tier
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="p-4 bg-surface-light-alt dark:bg-surface-dark-alt rounded-xl border border-border-light dark:border-border-dark space-y-3">
+                    <div className="flex items-start gap-3">
+                      <Info className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark">About</p>
+                        <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark leading-relaxed">
+                          {selectedSponsor.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-4 bg-surface-light-alt dark:bg-surface-dark-alt rounded-xl border border-border-light dark:border-border-dark">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Calendar className="w-4 h-4 text-secondary" />
+                        <span className="text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wider">Joined</span>
+                      </div>
+                      <p className="font-semibold text-text-primary-light dark:text-text-primary-dark">{selectedSponsor.joinDate}</p>
+                    </div>
+                    <div className="p-4 bg-surface-light-alt dark:bg-surface-dark-alt rounded-xl border border-border-light dark:border-border-dark">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Clock className="w-4 h-4 text-secondary" />
+                        <span className="text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wider">Duration</span>
+                      </div>
+                      <p className="font-semibold text-text-primary-light dark:text-text-primary-dark">{selectedSponsor.duration}</p>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-gradient-to-br from-gold/10 to-transparent border border-gold/20 rounded-xl">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Landmark className="w-5 h-5 text-gold" />
+                      <span className="text-sm font-bold text-text-primary-light dark:text-text-primary-dark">Contribution & Pledge</span>
+                    </div>
+                    <p className="text-lg font-bold text-gold drop-shadow-sm">{selectedSponsor.contribution}</p>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <AddSponsorModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={handleAddSponsor}
+      />
     </div>
   );
 }

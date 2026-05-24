@@ -1,15 +1,18 @@
 "use client";
-
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { currentUser, monthlyStats, achievements, recentActivities, weeklyChartData } from "@tn/shared/data/mock";
+import { useEventStore } from "@/store/useEventStore";
+import { useActivityStore } from "@/store/useActivityStore";
+import Link from "next/link";
+import { currentUser, monthlyStats, achievements, weeklyChartData, events } from "@tn/shared/data/mock";
 import Card from "@tn/shared/components/ui/Card";
+import Button from "@tn/shared/components/ui/Button";
 import Badge from "@tn/shared/components/ui/Badge";
 import ProgressRing from "@tn/shared/components/ui/ProgressRing";
 import {
   MapPin, Calendar, CheckCircle2, TrendingUp,
-  Flame, Footprints, Zap as ZapIcon, Activity,
-  Clock, Route, LogOut
+  Flame, Footprints, Activity,
+  Route, LogOut
 } from "lucide-react";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -23,6 +26,17 @@ import {
 export default function ProfilePage() {
   const user = currentUser;
   const stats = monthlyStats;
+
+  const { registeredEventIds, unregisterEvent } = useEventStore();
+  const { activities } = useActivityStore();
+  const registeredEvents = events.filter((e) => registeredEventIds.includes(e.id));
+
+  const totalLoggedDistance = activities.reduce((acc, curr) => acc + curr.distance, 0);
+  const displayTotalDistance = user.distanceKm + totalLoggedDistance;
+  const displayTotalCalories = (user.distanceKm * 60) + Math.round(totalLoggedDistance * 60); // approximate total calories
+  const displayTotalSteps = user.steps + Math.round(totalLoggedDistance * 1300);
+  const uniqueLoggedDates = new Set(activities.map(a => a.date)).size;
+  const displayTotalActiveDays = stats.activeDays + uniqueLoggedDates; // Keep active days based on recent or update it if user has total
 
   useEffect(() => {
     if (!document.cookie.includes("user_auth=true")) {
@@ -38,32 +52,32 @@ export default function ProfilePage() {
   const statCards = [
     {
       label: "Distance",
-      value: stats.distanceKm,
-      goal: stats.distanceGoal,
+      value: Number(displayTotalDistance.toFixed(1)),
+      goal: 1000,
       unit: "km",
       color: "#06B6D4",
       icon: Route,
     },
     {
       label: "Steps",
-      value: stats.steps,
-      goal: stats.stepsGoal,
+      value: displayTotalSteps,
+      goal: 1000000,
       unit: "",
       color: "#8B5CF6",
       icon: Footprints,
     },
     {
       label: "Calories",
-      value: stats.calories,
-      goal: stats.caloriesGoal,
+      value: displayTotalCalories,
+      goal: 50000,
       unit: "kcal",
       color: "#F59E0B",
       icon: Flame,
     },
     {
       label: "Active Days",
-      value: stats.activeDays,
-      goal: stats.activeDaysGoal,
+      value: displayTotalActiveDays,
+      goal: 100,
       unit: "days",
       color: "#10B981",
       icon: Activity,
@@ -120,7 +134,7 @@ export default function ProfilePage() {
               {/* Quick Stats */}
               <div className="flex gap-6 text-center">
                 <div>
-                  <p className="text-2xl font-bold text-primary">{user.distanceKm}</p>
+                  <p className="text-2xl font-bold text-primary">{Number(displayTotalDistance.toFixed(1))}</p>
                   <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark">Total km</p>
                 </div>
                 <div>
@@ -141,7 +155,7 @@ export default function ProfilePage() {
           </Card>
         </motion.div>
 
-        {/* Monthly Stats with Progress Rings */}
+        {/* All-Time Stats with Progress Rings */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -253,6 +267,50 @@ export default function ProfilePage() {
           </motion.div>
         </div>
 
+        {/* Event History & Registrations */}
+        {registeredEvents.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.35 }}
+            className="mt-8"
+          >
+            <Card variant="glass">
+              <h3 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
+                Event Registrations
+              </h3>
+              <div className="space-y-4">
+                {registeredEvents.map((event) => (
+                  <div key={event.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-xl bg-surface-light-alt dark:bg-surface-dark-alt border border-border-light dark:border-border-dark">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Badge variant={event.status === "completed" ? "default" : event.status === "ongoing" ? "success" : "primary"} size="sm">
+                          {event.status.toUpperCase()}
+                        </Badge>
+                        <h4 className="font-bold text-text-primary-light dark:text-text-primary-dark">{event.title}</h4>
+                      </div>
+                      <div className="flex items-center gap-4 text-xs text-text-secondary-light dark:text-text-secondary-dark">
+                        <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {event.date}</span>
+                        <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {event.location}</span>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 w-full sm:w-auto">
+                      {event.status !== "completed" && (
+                        <Button variant="outline" size="sm" className="w-full sm:w-auto text-danger border-danger/30 hover:bg-danger/10" onClick={() => unregisterEvent(event.id)}>
+                          Unregister
+                        </Button>
+                      )}
+                      <Link href={`/events/${event.id}`} className="w-full sm:w-auto">
+                        <Button size="sm" variant="outline" className="w-full sm:w-auto">View Details</Button>
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </motion.div>
+        )}
+
         {/* Recent Activity */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -265,37 +323,36 @@ export default function ProfilePage() {
               Recent Activity
             </h3>
             <div className="space-y-3">
-              {recentActivities.map((activity) => (
-                <div
-                  key={activity.id}
-                  className="flex items-center gap-4 p-4 rounded-xl bg-bg-light dark:bg-bg-dark hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
-                >
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                    activity.type === "run"
-                      ? "bg-primary/10 dark:bg-primary/20"
-                      : activity.type === "walk"
-                      ? "bg-emerald-100 dark:bg-emerald-900/20"
-                      : "bg-amber-100 dark:bg-amber-900/20"
-                  }`}>
-                    <span className="text-lg">
-                      {activity.type === "run" ? "🏃" : activity.type === "walk" ? "🚶" : "🚴"}
+              {activities.length > 0 ? (
+                activities.map((activity) => (
+                  <div
+                    key={activity.id}
+                    className="flex items-center gap-4 p-4 rounded-xl bg-bg-light dark:bg-bg-dark hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                  >
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                      activity.type.toLowerCase() === "run"
+                        ? "bg-primary/10 dark:bg-primary/20"
+                        : activity.type.toLowerCase() === "walk"
+                        ? "bg-emerald-100 dark:bg-emerald-900/20"
+                        : "bg-amber-100 dark:bg-amber-900/20"
+                    }`}>
+                      <span className="text-lg">
+                        {activity.type.toLowerCase() === "run" ? "🏃" : activity.type.toLowerCase() === "walk" ? "🚶" : "🚴"}
+                      </span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-text-primary-light dark:text-text-primary-dark capitalize">
+                        {activity.type} • {activity.distance} km
+                      </p>
+                    </div>
+                    <span className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
+                      {activity.date}
                     </span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-text-primary-light dark:text-text-primary-dark capitalize">
-                      {activity.type} • {activity.distanceKm} km
-                    </p>
-                    <div className="flex items-center gap-3 text-xs text-text-secondary-light dark:text-text-secondary-dark">
-                      <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{activity.duration}</span>
-                      <span>{activity.pace}</span>
-                      <span>{activity.calories} kcal</span>
-                    </div>
-                  </div>
-                  <span className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
-                    {activity.date}
-                  </span>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark text-center py-4">No recent activities logged.</p>
+              )}
             </div>
           </Card>
         </motion.div>

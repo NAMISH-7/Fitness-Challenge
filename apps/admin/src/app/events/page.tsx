@@ -1,7 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Plus, Calendar, MapPin, Users, Edit3, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { Plus, Calendar, MapPin, Users, Edit3, Trash2, AlertTriangle } from "lucide-react";
 import AdminSidebar from "@/components/layout/AdminSidebar";
 import Card from "@tn/shared/components/ui/Card";
 import Button from "@tn/shared/components/ui/Button";
@@ -9,6 +11,16 @@ import Badge from "@tn/shared/components/ui/Badge";
 import { events } from "@tn/shared/data/mock";
 
 export default function EventsPage() {
+  const [localEvents, setLocalEvents] = useState(events);
+  const [eventToDelete, setEventToDelete] = useState<string | null>(null);
+
+  const handleDelete = () => {
+    if (eventToDelete) {
+      setLocalEvents(prev => prev.filter(e => e.id !== eventToDelete));
+      setEventToDelete(null);
+    }
+  };
+
   return (
     <div className="flex min-h-screen">
       <AdminSidebar />
@@ -26,31 +38,36 @@ export default function EventsPage() {
               Organize and monitor fitness events across the state.
             </p>
           </div>
-          <Button size="sm">
-            <Plus className="w-4 h-4" /> Create New Event
-          </Button>
+          <Link href="/events/create">
+            <Button size="sm">
+              <Plus className="w-4 h-4 mr-2" /> Create New Event
+            </Button>
+          </Link>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events.map((event, i) => (
-            <motion.div
-              key={event.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05, duration: 0.3 }}
-            >
+          <AnimatePresence>
+            {localEvents.map((event, i) => (
+              <motion.div
+                key={event.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+                transition={{ delay: i * 0.05, duration: 0.3 }}
+              >
               <Card hover className="h-full flex flex-col overflow-hidden" padding="none">
                 <div className="h-40 w-full relative">
                   {/* Fallback pattern for events without real images */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 dark:from-primary/10 dark:to-secondary/10" />
-                  <img
-                    src={event.image || `https://source.unsplash.com/random/400x200/?fitness,${event.type}`}
-                    alt={event.title}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMxZTFlMjgiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMxZTFlMjgiLz48L3N2Zz4=";
-                    }}
-                  />
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 dark:from-primary/10 dark:to-secondary/10 flex items-center justify-center">
+                     <Calendar className="w-12 h-12 text-primary/40 dark:text-primary/30" />
+                  </div>
+                  {event.image && (
+                    <img
+                      src={event.image}
+                      alt={event.title}
+                      className="w-full h-full object-cover relative z-10"
+                    />
+                  )}
                   <div className="absolute top-3 right-3">
                     {event.status === "upcoming" && <Badge variant="warning">Upcoming</Badge>}
                     {event.status === "ongoing" && <Badge variant="success">Ongoing</Badge>}
@@ -82,10 +99,15 @@ export default function EventsPage() {
                   </div>
 
                   <div className="flex items-center gap-2 mt-6 pt-4 border-t border-border-light dark:border-border-dark">
-                    <Button variant="outline" size="sm" className="flex-1">
-                      <Edit3 className="w-4 h-4" /> Edit
-                    </Button>
-                    <button className="p-2 border-2 border-transparent hover:border-danger hover:text-danger rounded-xl transition-colors text-text-secondary-light dark:text-text-secondary-dark">
+                    <Link href={`/events/edit/${event.id}`} className="flex-1">
+                      <Button variant="outline" size="sm" className="w-full">
+                        <Edit3 className="w-4 h-4 mr-2" /> Edit
+                      </Button>
+                    </Link>
+                    <button 
+                      onClick={() => setEventToDelete(event.id)}
+                      className="p-2 border-2 border-transparent hover:border-danger hover:text-danger rounded-xl transition-colors text-text-secondary-light dark:text-text-secondary-dark"
+                    >
                       <Trash2 className="w-5 h-5" />
                     </button>
                   </div>
@@ -93,8 +115,40 @@ export default function EventsPage() {
               </Card>
             </motion.div>
           ))}
+          </AnimatePresence>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {eventToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="w-full max-w-sm"
+          >
+            <Card padding="lg" className="text-center border-danger/20">
+              <div className="w-16 h-16 bg-danger/10 text-danger rounded-full flex items-center justify-center mx-auto mb-4">
+                <AlertTriangle className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-bold text-text-primary-light dark:text-text-primary-dark mb-2">
+                Delete Event?
+              </h3>
+              <p className="text-text-secondary-light dark:text-text-secondary-dark text-sm mb-6">
+                Are you sure you want to delete this event? This action cannot be undone.
+              </p>
+              <div className="flex gap-4">
+                <Button variant="outline" className="flex-1" onClick={() => setEventToDelete(null)}>
+                  Cancel
+                </Button>
+                <Button className="flex-1 !bg-danger hover:!bg-danger/90 border-none" onClick={handleDelete}>
+                  Delete
+                </Button>
+              </div>
+            </Card>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

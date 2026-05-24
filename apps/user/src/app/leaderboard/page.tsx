@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { participants, collegeRankings } from "@tn/shared/data/mock";
+import { participants, collegeRankings, currentUser } from "@tn/shared/data/mock";
+import { useActivityStore } from "@/store/useActivityStore";
 import TopThree from "@/components/leaderboard/TopThree";
 import LeaderboardTable from "@/components/leaderboard/LeaderboardTable";
 import LeaderboardTabs from "@/components/leaderboard/LeaderboardTabs";
@@ -19,11 +20,45 @@ export default function LeaderboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("All Districts");
 
+  const { activities } = useActivityStore();
+  const totalLoggedDistance = activities.reduce((acc, curr) => acc + curr.distance, 0);
+  const displayTotalDistance = currentUser.distanceKm + totalLoggedDistance;
+
+  const dynamicParticipants = useMemo(() => {
+    // Remove the fake placeholder for the current user ID if it exists
+    const filtered = participants.filter((p) => p.id !== currentUser.id);
+    
+    // Add the actual current user with their dynamically logged distance
+    const activeUser = {
+      ...currentUser,
+      distanceKm: displayTotalDistance,
+    };
+    filtered.push(activeUser);
+
+    // Re-sort the leaderboard by distance
+    filtered.sort((a, b) => b.distanceKm - a.distanceKm);
+
+    // Re-assign ranks based on the new sorted order
+    return filtered.map((p, index) => ({
+      ...p,
+      rank: index + 1,
+    }));
+  }, [displayTotalDistance]);
+
   const filteredParticipants = useMemo(() => {
-    return participants.filter((p) => {
+    return dynamicParticipants.filter((p) => {
       const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.district.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesDistrict = selectedDistrict === "All Districts" || p.district === selectedDistrict;
+      return matchesSearch && matchesDistrict;
+    });
+  }, [searchQuery, selectedDistrict]);
+
+  const filteredColleges = useMemo(() => {
+    return collegeRankings.filter((c) => {
+      const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        c.district.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesDistrict = selectedDistrict === "All Districts" || c.district === selectedDistrict;
       return matchesSearch && matchesDistrict;
     });
   }, [searchQuery, selectedDistrict]);
@@ -67,10 +102,14 @@ export default function LeaderboardPage() {
         {/* Content */}
         {activeTab === "individual" && (
           <>
-            {filteredParticipants.length >= 3 && searchQuery === "" && selectedDistrict === "All Districts" && (
-              <TopThree participants={filteredParticipants} />
+            {filteredParticipants.length >= 3 && searchQuery === "" && selectedDistrict === "All Districts" ? (
+              <>
+                <TopThree participants={filteredParticipants} />
+                <LeaderboardTable participants={filteredParticipants.slice(3)} />
+              </>
+            ) : (
+              <LeaderboardTable participants={filteredParticipants} />
             )}
-            <LeaderboardTable participants={filteredParticipants} />
             {filteredParticipants.length === 0 && (
               <div className="text-center py-12 text-text-secondary-light dark:text-text-secondary-dark">
                 No participants found matching your criteria.
@@ -81,7 +120,7 @@ export default function LeaderboardPage() {
 
         {activeTab === "college" && (
           <div className="space-y-3">
-            {collegeRankings.map((college, i) => {
+            {filteredColleges.map((college, i) => {
               const rankDiff = college.previousRank - college.rank;
               return (
                 <motion.div
@@ -122,15 +161,24 @@ export default function LeaderboardPage() {
                 </motion.div>
               );
             })}
+            {filteredColleges.length === 0 && (
+              <div className="text-center py-12 text-text-secondary-light dark:text-text-secondary-dark">
+                No colleges found matching your criteria.
+              </div>
+            )}
           </div>
         )}
 
         {(activeTab === "monthly" || activeTab === "alltime") && (
           <>
-            {filteredParticipants.length >= 3 && searchQuery === "" && selectedDistrict === "All Districts" && (
-              <TopThree participants={filteredParticipants} />
+            {filteredParticipants.length >= 3 && searchQuery === "" && selectedDistrict === "All Districts" ? (
+              <>
+                <TopThree participants={filteredParticipants} />
+                <LeaderboardTable participants={filteredParticipants.slice(3)} />
+              </>
+            ) : (
+              <LeaderboardTable participants={filteredParticipants} />
             )}
-            <LeaderboardTable participants={filteredParticipants} />
           </>
         )}
       </div>

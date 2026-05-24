@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Search, Filter, MoreHorizontal, User, ShieldCheck, XCircle } from "lucide-react";
+import { Search, Filter, MoreHorizontal, User, ShieldCheck, XCircle, Trash2 } from "lucide-react";
 import AdminSidebar from "@/components/layout/AdminSidebar";
 import Card from "@tn/shared/components/ui/Card";
 import Input from "@tn/shared/components/ui/Input";
@@ -12,12 +12,49 @@ import { participants } from "@tn/shared/data/mock";
 
 export default function UsersPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [users, setUsers] = useState(participants);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
-  const filteredUsers = participants.filter(
+  const handleDeleteUser = (id: string) => {
+    if (window.confirm("Are you sure you want to permanently delete this user?")) {
+      setUsers(users.filter(u => u.id !== id));
+      setActiveDropdown(null);
+    }
+  };
+
+  const filteredUsers = users.filter(
     (p) =>
       p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.district.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleExportCSV = () => {
+    const headers = ["ID,Name,District,College,Distance(km),Steps,Rank,Joined Date,Verified"];
+    const rows = filteredUsers.map(user => {
+      const escape = (str: string) => `"${str.replace(/"/g, '""')}"`;
+      return [
+        user.id,
+        escape(user.name),
+        escape(user.district),
+        escape(user.college || "N/A"),
+        user.distanceKm,
+        user.steps,
+        user.rank,
+        user.joinedDate,
+        user.isVerified ? "Yes" : "No"
+      ].join(",");
+    });
+    
+    const csvContent = headers.concat(rows).join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `tn_fitness_users_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div className="flex min-h-screen">
@@ -40,7 +77,7 @@ export default function UsersPage() {
             <Button variant="outline" size="sm">
               <Filter className="w-4 h-4" /> Filter
             </Button>
-            <Button size="sm">Export CSV</Button>
+            <Button size="sm" onClick={handleExportCSV}>Export CSV</Button>
           </div>
         </motion.div>
 
@@ -116,10 +153,28 @@ export default function UsersPage() {
                         </Badge>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-right">
-                      <button className="p-2 rounded-lg hover:bg-surface-light dark:hover:bg-surface-dark text-text-secondary-light dark:text-text-secondary-dark transition-colors">
+                    <td className="px-6 py-4 text-right relative">
+                      <button 
+                        onClick={() => setActiveDropdown(activeDropdown === user.id ? null : user.id)}
+                        className="p-2 rounded-lg hover:bg-surface-light dark:hover:bg-surface-dark text-text-secondary-light dark:text-text-secondary-dark transition-colors"
+                      >
                         <MoreHorizontal className="w-4 h-4" />
                       </button>
+                      
+                      {activeDropdown === user.id && (
+                        <motion.div 
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="absolute right-12 top-10 w-max min-w-[140px] bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl shadow-lg overflow-hidden z-20"
+                        >
+                          <button 
+                            onClick={() => handleDeleteUser(user.id)}
+                            className="w-full text-left px-4 py-2.5 text-sm text-danger hover:bg-danger/10 transition-colors flex items-center gap-2 font-medium whitespace-nowrap"
+                          >
+                            <Trash2 className="w-4 h-4" /> Delete User
+                          </button>
+                        </motion.div>
+                      )}
                     </td>
                   </motion.tr>
                 ))}

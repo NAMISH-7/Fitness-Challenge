@@ -18,7 +18,9 @@ export default function AnimatedCounter({
   prefix = "",
   className,
 }: AnimatedCounterProps) {
-  const count = useAnimatedCounter(value, duration);
+  const hasDecimals = value % 1 !== 0;
+  const decimals = hasDecimals ? 1 : 0;
+  const count = useAnimatedCounter(value, duration, true, decimals);
 
   return (
     <span
@@ -26,7 +28,7 @@ export default function AnimatedCounter({
       data-counter={value}
     >
       {prefix}
-      {count.toLocaleString()}
+      {decimals > 0 ? count.toFixed(decimals) : count.toLocaleString()}
       {suffix}
     </span>
   );

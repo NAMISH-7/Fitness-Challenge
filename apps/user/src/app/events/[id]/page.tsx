@@ -4,13 +4,14 @@ import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { events } from "@tn/shared/data/mock";
+import { useEventStore } from "@/store/useEventStore";
 import Card from "@tn/shared/components/ui/Card";
 import Badge from "@tn/shared/components/ui/Badge";
 import Button from "@tn/shared/components/ui/Button";
 import Link from "next/link";
 import {
-  Calendar, MapPin, Users, ArrowRight, Clock,
-  Trophy, Megaphone, Monitor, GraduationCap, CheckCircle2, ChevronLeft, Map
+  Calendar, MapPin, Users,
+  Trophy, Megaphone, Monitor, GraduationCap, CheckCircle2, ChevronLeft
 } from "lucide-react";
 
 const typeIcons: Record<string, React.ReactNode> = {
@@ -33,13 +34,21 @@ export default function EventDetailsPage() {
   
   const event = events.find((e) => e.id === eventId);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  
+  const { registeredEventIds, registerEvent, unregisterEvent } = useEventStore();
+  const isRegistered = registeredEventIds.includes(eventId);
 
   const handleRegister = () => {
     if (!document.cookie.includes("user_auth=true")) {
       window.location.href = "/auth";
       return;
     }
-    setShowSuccessModal(true);
+    if (isRegistered) {
+      unregisterEvent(eventId);
+    } else {
+      registerEvent(eventId);
+      setShowSuccessModal(true);
+    }
   };
 
   if (!event) {
@@ -47,7 +56,7 @@ export default function EventDetailsPage() {
       <div className="min-h-screen pt-32 pb-16 px-4 flex flex-col items-center text-center">
         <h1 className="text-4xl font-bold mb-4">Event Not Found</h1>
         <p className="text-text-secondary-light dark:text-text-secondary-dark mb-8">
-          The event you're looking for doesn't exist or has been removed.
+          The event you&apos;re looking for doesn&apos;t exist or has been removed.
         </p>
         <Link href="/events">
           <Button>Back to Events</Button>
@@ -153,7 +162,7 @@ export default function EventDetailsPage() {
                 Whether you are a seasoned athlete or just starting your fitness journey, there is a place for you here.
               </p>
               <p className="text-text-secondary-light dark:text-text-secondary-dark leading-relaxed mt-4">
-                Participants will receive an exclusive finisher's medal, a digital certificate, and bonus points towards their TN Fitness Challenge ranking.
+                Participants will receive an exclusive finisher&apos;s medal, a digital certificate, and bonus points towards their TN Fitness Challenge ranking.
               </p>
             </Card>
           </div>
@@ -180,6 +189,10 @@ export default function EventDetailsPage() {
               {event.status === "completed" ? (
                 <Button className="w-full opacity-50 cursor-not-allowed" disabled>
                   Event Completed
+                </Button>
+              ) : isRegistered ? (
+                <Button variant="outline" size="lg" className="w-full text-lg border-danger text-danger hover:bg-danger/10" onClick={handleRegister}>
+                  Unregister
                 </Button>
               ) : (
                 <Button size="lg" className="w-full text-lg shadow-lg shadow-primary/25" onClick={handleRegister}>
@@ -208,12 +221,12 @@ export default function EventDetailsPage() {
                 <CheckCircle2 className="w-8 h-8 text-success" />
               </div>
               <h3 className="text-xl font-bold text-text-primary-light dark:text-text-primary-dark mb-2">
-                You're in! 🎉
+                You&apos;re in! 🎉
               </h3>
               <p className="text-text-secondary-light dark:text-text-secondary-dark mb-6">
-                You have successfully registered for <strong>{event.title}</strong>. We've added this to your dashboard and we'll see you at the starting line!
+                You have successfully registered for <strong>{event.title}</strong>. We&apos;ve added this to your dashboard and we&apos;ll see you at the starting line!
               </p>
-              <Button onClick={() => router.push("/dashboard")} className="w-full">
+              <Button onClick={() => { setShowSuccessModal(false); router.push("/dashboard"); }} className="w-full">
                 Go to Dashboard
               </Button>
             </Card>

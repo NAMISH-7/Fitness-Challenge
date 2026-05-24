@@ -12,8 +12,13 @@ interface LeaderboardTableProps {
 }
 
 export default function LeaderboardTable({ participants: initialParticipants }: LeaderboardTableProps) {
-  const [participants, setParticipants] = useState<Participant[]>(initialParticipants.slice(3));
+  const [participants, setParticipants] = useState<Participant[]>(initialParticipants);
   const [isLive, setIsLive] = useState(false);
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => {
+    setParticipants(initialParticipants);
+  }, [initialParticipants]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;

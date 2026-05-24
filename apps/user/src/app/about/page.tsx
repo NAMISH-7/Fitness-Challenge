@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Card from "@tn/shared/components/ui/Card";
 import AnimatedCounter from "@tn/shared/components/ui/AnimatedCounter";
 import {
-  Heart, Target, Users, Globe, Lightbulb, Rocket,
+  Heart, Target, Globe, Rocket,
   GraduationCap, Shield, Smartphone, BarChart3
 } from "lucide-react";
 

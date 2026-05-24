@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard, Users, Calendar, Handshake,
   BarChart3, Settings, LogOut, Zap, ChevronLeft, ChevronRight,
@@ -21,7 +21,13 @@ const sidebarLinks = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
+
+  const handleLogout = () => {
+    document.cookie = "admin_auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    router.push("/login");
+  };
 
   return (
     <aside
@@ -80,18 +86,18 @@ export default function AdminSidebar() {
           <ThemeToggle />
         </div>
 
-        <Link
-          href="/"
+        <button
+          onClick={handleLogout}
           className={cn(
-            "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
-            "text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:text-danger",
+            "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
+            "text-text-secondary-light dark:text-text-secondary-dark hover:bg-danger/10 hover:text-danger",
             collapsed && "justify-center px-2"
           )}
-          title={collapsed ? "Back to Site" : undefined}
+          title={collapsed ? "Logout" : undefined}
         >
           <LogOut className="w-5 h-5 flex-shrink-0" />
-          {!collapsed && "Back to Site"}
-        </Link>
+          {!collapsed && "Logout"}
+        </button>
 
         {/* Collapse toggle */}
         <button

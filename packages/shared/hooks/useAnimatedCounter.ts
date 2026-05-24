@@ -5,7 +5,8 @@ import { useState, useEffect, useRef } from "react";
 export function useAnimatedCounter(
   end: number,
   duration: number = 2000,
-  startOnView: boolean = true
+  startOnView: boolean = true,
+  decimals: number = 0
 ): number {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
@@ -31,6 +32,11 @@ export function useAnimatedCounter(
     const el = document.querySelector(`[data-counter="${end}"]`);
     if (el) observer.observe(el);
 
+    // If already animated, just update immediately when end changes
+    if (hasAnimated.current) {
+      setCount(end);
+    }
+
     return () => observer.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [end, duration, startOnView]);
@@ -42,7 +48,7 @@ export function useAnimatedCounter(
       const progress = Math.min(elapsed / duration, 1);
       // Ease out cubic
       const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(eased * end));
+      setCount(Number((eased * end).toFixed(decimals)));
       if (progress < 1) {
         requestAnimationFrame(step);
       }
