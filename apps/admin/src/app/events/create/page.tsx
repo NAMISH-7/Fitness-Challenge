@@ -16,21 +16,55 @@ export default function CreateEventPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isVirtual, setIsVirtual] = useState(false);
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
+  
+  const [formData, setFormData] = useState({
+    title: "",
+    type: "marathon",
+    description: "",
+    about: "",
+    location: "",
+    startDate: "",
+    endDate: "",
+    participants: ""
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const response = await fetch("/api/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: `evt-${Date.now()}`,
+          title: formData.title,
+          date: formData.startDate.split('T')[0] || new Date().toISOString().split('T')[0],
+          location: isVirtual ? "Virtual" : formData.location,
+          participantCount: 0,
+          maxParticipants: formData.participants ? parseInt(formData.participants) : 0,
+          status: "upcoming",
+          image: bannerPreview || "https://images.unsplash.com/photo-1552674605-15c37112ee11?auto=format&fit=crop&q=80",
+          organizer: "TNFitness Official",
+          description: formData.description,
+          tags: [formData.type]
+        })
+      });
+
+      if (response.ok) {
+        setIsSuccess(true);
+        setTimeout(() => {
+          router.push("/events");
+        }, 2000);
+      } else {
+        alert("Failed to create event");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error creating event");
+    } finally {
       setIsSubmitting(false);
-      setIsSuccess(true);
-      
-      // Redirect after success
-      setTimeout(() => {
-        router.push("/events");
-      }, 2000);
-    }, 1500);
+    }
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,12 +118,18 @@ export default function CreateEventPage() {
                     label="Event Name" 
                     placeholder="e.g. Chennai Coastal Marathon 2026" 
                     required 
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   />
                   <div className="space-y-1">
                     <label className="block text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">
                       Event Type
                     </label>
-                    <select className="w-full px-4 py-2.5 rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
+                    <select 
+                      value={formData.type}
+                      onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                    >
                       <option value="marathon">Marathon</option>
                       <option value="campus">Campus Challenge</option>
                       <option value="awareness">Awareness Drive</option>
@@ -101,6 +141,8 @@ export default function CreateEventPage() {
                       label="Short Description" 
                       placeholder="A brief 1-sentence summary for the event cards." 
                       required 
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     />
                   </div>
                   <div className="md:col-span-2 space-y-1">
@@ -110,6 +152,8 @@ export default function CreateEventPage() {
                     <textarea 
                       required
                       rows={5}
+                      value={formData.about}
+                      onChange={(e) => setFormData({ ...formData, about: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-y"
                       placeholder="Detailed information about the event, rules, routes, etc..."
                     />
@@ -148,6 +192,8 @@ export default function CreateEventPage() {
                         label="Physical Location" 
                         placeholder="e.g. Marina Beach, Chennai" 
                         required={!isVirtual}
+                        value={formData.location}
+                        onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                       />
                     </div>
                   )}
@@ -158,6 +204,8 @@ export default function CreateEventPage() {
                     <input 
                       type="datetime-local" 
                       required
+                      value={formData.startDate}
+                      onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
                       className="w-full px-4 py-2.5 rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                     />
                   </div>
@@ -167,6 +215,8 @@ export default function CreateEventPage() {
                     </label>
                     <input 
                       type="datetime-local" 
+                      value={formData.endDate}
+                      onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
                       className="w-full px-4 py-2.5 rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                     />
                   </div>
@@ -184,7 +234,9 @@ export default function CreateEventPage() {
                   <Input 
                     type="number"
                     label="Maximum Participants (Optional)" 
-                    placeholder="Leave empty for unlimited" 
+                    placeholder="Leave empty for unlimited"
+                    value={formData.participants}
+                    onChange={(e) => setFormData({ ...formData, participants: e.target.value })} 
                   />
                   <div className="md:col-span-2 space-y-2">
                     <label className="block text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">

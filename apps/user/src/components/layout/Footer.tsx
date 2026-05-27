@@ -2,10 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 import { Zap, Globe, MessageCircle, Mail, XIcon } from "lucide-react";
 
 export default function Footer() {
   const pathname = usePathname();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("user_auth") === "true") {
+      setTimeout(() => {
+        setIsAuthenticated(true);
+      }, 0);
+    }
+  }, []);
 
   // Don't show footer on admin page
   if (pathname === "/admin") return null;
@@ -36,11 +46,11 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2">
               {[
-                { label: "Leaderboard", href: "/leaderboard" },
+                { label: "Leaderboard", href: "/leaderboard", protected: true },
                 { label: "Events", href: "/events" },
-                { label: "Profile", href: "/profile" },
+                { label: "Profile", href: "/profile", protected: true },
                 { label: "About Us", href: "/about" },
-              ].map((link) => (
+              ].filter(link => !link.protected || isAuthenticated).map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}

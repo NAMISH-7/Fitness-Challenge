@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Lock, User, Eye, EyeOff, Zap } from "lucide-react";
+import { Mail, Lock, User, Zap } from "lucide-react";
 import Input from "@tn/shared/components/ui/Input";
 import Button from "@tn/shared/components/ui/Button";
 import Link from "next/link";
@@ -16,16 +16,17 @@ import Link from "next/link";
 export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleAuth = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     // Mock API delay
     setTimeout(() => {
-      // Set a simple cookie to indicate authentication for the user app
-      document.cookie = "user_auth=true; path=/; max-age=86400";
+      // Set sessionStorage flag (auto-clears when tab/window closes)
+      sessionStorage.setItem("user_auth", "true");
+      // Set a session cookie (auto-clears when browser/session closes)
+      document.cookie = "user_auth=true; path=/";
       // Force a full reload to the dashboard
       window.location.href = "/dashboard";
     }, 800);
@@ -99,15 +100,12 @@ export default function AuthPage() {
           </div>
 
           {/* Divider */}
-          <div className="relative mb-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border-light dark:border-border-dark" />
-            </div>
-            <div className="relative flex justify-center text-xs">
-              <span className="px-3 bg-surface-light dark:bg-surface-dark text-text-secondary-light dark:text-text-secondary-dark">
-                or continue with email
-              </span>
-            </div>
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-border-light dark:bg-border-dark opacity-60" />
+            <span className="text-xs text-text-secondary-light dark:text-text-secondary-dark font-semibold tracking-wide whitespace-nowrap uppercase">
+              or use credentials
+            </span>
+            <div className="flex-1 h-px bg-border-light dark:bg-border-dark opacity-60" />
           </div>
 
           {/* Form */}
@@ -125,21 +123,12 @@ export default function AuthPage() {
               placeholder="you@example.com"
               icon={<Mail className="w-4 h-4" />}
             />
-            <div className="relative">
-              <Input
-                label="Password"
-                type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
-                icon={<Lock className="w-4 h-4" />}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-[38px] text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors cursor-pointer"
-              >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
+            <Input
+              label="Password"
+              type="password"
+              placeholder="••••••••"
+              icon={<Lock className="w-4 h-4" />}
+            />
 
             {!isSignUp && (
               <div className="flex items-center justify-between text-sm">

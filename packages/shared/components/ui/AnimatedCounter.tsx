@@ -20,10 +20,11 @@ export default function AnimatedCounter({
 }: AnimatedCounterProps) {
   const hasDecimals = value % 1 !== 0;
   const decimals = hasDecimals ? 1 : 0;
-  const count = useAnimatedCounter(value, duration, true, decimals);
+  const { count, ref } = useAnimatedCounter(value, duration, true, decimals);
 
   return (
     <span
+      ref={ref as any}
       className={cn("tabular-nums", className)}
       data-counter={value}
     >

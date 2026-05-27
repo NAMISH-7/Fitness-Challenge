@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { events } from "@tn/shared/data/mock";
+import { useDataStore } from "@/store/useDataStore";
 import { useEventStore } from "@/store/useEventStore";
 import Card from "@tn/shared/components/ui/Card";
 import Badge from "@tn/shared/components/ui/Badge";
@@ -29,6 +29,7 @@ const statusBadgeVariant: Record<string, "success" | "primary" | "default"> = {
 
 export default function EventDetailsPage() {
   const params = useParams();
+  const { events } = useDataStore();
   const router = useRouter();
   const eventId = params.id as string;
   
@@ -39,7 +40,8 @@ export default function EventDetailsPage() {
   const isRegistered = registeredEventIds.includes(eventId);
 
   const handleRegister = () => {
-    if (!document.cookie.includes("user_auth=true")) {
+    if (sessionStorage.getItem("user_auth") !== "true") {
+      document.cookie = "user_auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
       window.location.href = "/auth";
       return;
     }
@@ -173,7 +175,7 @@ export default function EventDetailsPage() {
               <div className="text-center mb-6">
                 <div className="text-white/20 mb-4 flex justify-center">
                   <div className="w-24 h-24 rounded-full bg-surface-light-alt dark:bg-surface-dark-alt flex items-center justify-center">
-                    <span className="text-primary">{typeIcons[event.type]}</span>
+                    <span className="text-primary">{typeIcons[event.type] || <Calendar className="w-5 h-5" />}</span>
                   </div>
                 </div>
                 <h3 className="text-xl font-bold text-text-primary-light dark:text-text-primary-dark">

@@ -4,19 +4,15 @@ import { motion } from "framer-motion";
 import { useEventStore } from "@/store/useEventStore";
 import { useActivityStore } from "@/store/useActivityStore";
 import Link from "next/link";
-import { currentUser, monthlyStats, achievements, weeklyChartData, events } from "@tn/shared/data/mock";
+import { currentUser, monthlyStats, achievements, weeklyChartData, participants } from "@tn/shared/data/mock";
+import { useDataStore } from "@/store/useDataStore";
 import Card from "@tn/shared/components/ui/Card";
 import Button from "@tn/shared/components/ui/Button";
 import Badge from "@tn/shared/components/ui/Badge";
-import ProgressRing from "@tn/shared/components/ui/ProgressRing";
 import {
   MapPin, Calendar, CheckCircle2, TrendingUp,
-  Flame, Footprints, Activity,
-  Route, LogOut
+  LogOut
 } from "lucide-react";
-import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-} from "recharts";
 
 // TODO: [FUTURE] Integrate Google Fit API for real activity data
 // TODO: [FUTURE] Integrate Apple HealthKit
@@ -28,61 +24,38 @@ export default function ProfilePage() {
   const stats = monthlyStats;
 
   const { registeredEventIds, unregisterEvent } = useEventStore();
-  const { activities } = useActivityStore();
+  const { events } = useDataStore();
+  const { activities, fetchActivities } = useActivityStore();
+
+  useEffect(() => {
+    fetchActivities();
+  }, [fetchActivities]);
+
   const registeredEvents = events.filter((e) => registeredEventIds.includes(e.id));
 
   const totalLoggedDistance = activities.reduce((acc, curr) => acc + curr.distance, 0);
   const displayTotalDistance = user.distanceKm + totalLoggedDistance;
-  const displayTotalCalories = (user.distanceKm * 60) + Math.round(totalLoggedDistance * 60); // approximate total calories
-  const displayTotalSteps = user.steps + Math.round(totalLoggedDistance * 1300);
-  const uniqueLoggedDates = new Set(activities.map(a => a.date)).size;
-  const displayTotalActiveDays = stats.activeDays + uniqueLoggedDates; // Keep active days based on recent or update it if user has total
+
+  // Calculate dynamic rank
+  const activeUser = { ...user, distanceKm: displayTotalDistance };
+  const allParticipants = participants.filter(p => p.id !== user.id).concat(activeUser);
+  allParticipants.sort((a, b) => b.distanceKm - a.distanceKm);
+  const dynamicRank = allParticipants.findIndex(p => p.id === user.id) + 1;
 
   useEffect(() => {
-    if (!document.cookie.includes("user_auth=true")) {
+    if (sessionStorage.getItem("user_auth") !== "true") {
+      document.cookie = "user_auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
       window.location.href = "/auth";
     }
   }, []);
 
   const handleLogout = () => {
+    sessionStorage.removeItem("user_auth");
     document.cookie = "user_auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     window.location.href = "/";
   };
 
-  const statCards = [
-    {
-      label: "Distance",
-      value: Number(displayTotalDistance.toFixed(1)),
-      goal: 1000,
-      unit: "km",
-      color: "#06B6D4",
-      icon: Route,
-    },
-    {
-      label: "Steps",
-      value: displayTotalSteps,
-      goal: 1000000,
-      unit: "",
-      color: "#8B5CF6",
-      icon: Footprints,
-    },
-    {
-      label: "Calories",
-      value: displayTotalCalories,
-      goal: 50000,
-      unit: "kcal",
-      color: "#F59E0B",
-      icon: Flame,
-    },
-    {
-      label: "Active Days",
-      value: displayTotalActiveDays,
-      goal: 100,
-      unit: "days",
-      color: "#10B981",
-      icon: Activity,
-    },
-  ];
+
 
   return (
     <div className="min-h-screen pt-24 pb-16 px-4">
@@ -101,7 +74,7 @@ export default function ProfilePage() {
                   <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
                 </div>
                 <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold shadow-lg">
-                  #{user.rank}
+                  #{dynamicRank}
                 </div>
               </div>
 
@@ -143,121 +116,37 @@ export default function ProfilePage() {
                   </p>
                   <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark">Day Streak</p>
                 </div>
-                <div>
-                  <div className="flex items-center gap-1 justify-center">
-                    <TrendingUp className="w-4 h-4 text-success" />
-                    <p className="text-2xl font-bold text-success">+{user.previousRank - user.rank}</p>
-                  </div>
-                  <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark">Rank Change</p>
-                </div>
+
               </div>
             </div>
           </Card>
         </motion.div>
 
-        {/* All-Time Stats with Progress Rings */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
-        >
-          {statCards.map((stat) => {
-            const Icon = stat.icon;
-            const progress = (stat.value / stat.goal) * 100;
-            return (
-              <Card key={stat.label} variant="glass">
-                <div className="flex flex-col items-center text-center">
-                  <ProgressRing progress={progress} size={90} strokeWidth={6} color={stat.color}>
-                    <Icon className="w-5 h-5" style={{ color: stat.color }} />
-                  </ProgressRing>
-                  <p className="text-lg font-bold text-text-primary-light dark:text-text-primary-dark mt-3">
-                    {stat.value.toLocaleString()} <span className="text-sm font-normal text-text-secondary-light dark:text-text-secondary-dark">{stat.unit}</span>
-                  </p>
-                  <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
-                    {stat.label} • Goal: {stat.goal.toLocaleString()}
-                  </p>
-                  <div className="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-1.5 mt-2">
-                    <div
-                      className="h-1.5 rounded-full transition-all duration-1000"
-                      style={{ width: `${Math.min(progress, 100)}%`, backgroundColor: stat.color }}
-                    />
-                  </div>
-                </div>
-              </Card>
-            );
-          })}
-        </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Activity Chart */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="lg:col-span-2"
-          >
-            <Card variant="glass">
-              <h3 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
-                Weekly Activity
-              </h3>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={weeklyChartData}>
-                    <defs>
-                      <linearGradient id="colorDistance" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#06B6D4" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#06B6D4" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.1)" />
-                    <XAxis dataKey="day" stroke="rgba(148,163,184,0.5)" fontSize={12} />
-                    <YAxis stroke="rgba(148,163,184,0.5)" fontSize={12} />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "rgba(18,18,26,0.9)",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                        borderRadius: "12px",
-                        color: "#F1F5F9",
-                      }}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="distance"
-                      stroke="#06B6D4"
-                      strokeWidth={2}
-                      fillOpacity={1}
-                      fill="url(#colorDistance)"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </Card>
-          </motion.div>
 
           {/* Achievements */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
           >
             <Card variant="glass">
               <h3 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
                 Achievements
               </h3>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
                 {achievements.map((ach) => (
                   <div
                     key={ach.id}
-                    className={`flex flex-col items-center p-3 rounded-xl transition-all duration-200 ${
+                    className={`flex flex-col items-center p-4 rounded-xl transition-all duration-200 ${
                       ach.unlocked
                         ? "bg-primary/5 dark:bg-primary/10 hover:scale-105 cursor-pointer"
                         : "opacity-40 grayscale"
                     }`}
                     title={`${ach.name}: ${ach.description}`}
                   >
-                    <span className="text-2xl mb-1">{ach.icon}</span>
-                    <span className="text-[10px] font-medium text-text-secondary-light dark:text-text-secondary-dark text-center leading-tight">
+                    <span className="text-3xl mb-2">{ach.icon}</span>
+                    <span className="text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark text-center leading-tight">
                       {ach.name}
                     </span>
                   </div>
@@ -265,7 +154,6 @@ export default function ProfilePage() {
               </div>
             </Card>
           </motion.div>
-        </div>
 
         {/* Event History & Registrations */}
         {registeredEvents.length > 0 && (

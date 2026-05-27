@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
 
 export interface Activity {
   id: string;
@@ -11,28 +10,38 @@ export interface Activity {
 
 interface ActivityStoreState {
   activities: Activity[];
-  addActivity: (activity: Omit<Activity, "id" | "timestamp">) => void;
+  fetchActivities: () => Promise<void>;
+  addActivity: (activity: Omit<Activity, "id" | "timestamp">) => Promise<void>;
 }
 
-export const useActivityStore = create<ActivityStoreState>()(
-  persist(
-    (set) => ({
-      activities: [],
-      addActivity: (activityData) =>
-        set((state) => ({
-          activities: [
-            {
-              ...activityData,
-              id: `act-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-              timestamp: Date.now(),
-            },
-            ...state.activities,
-          ],
-        })),
-    }),
-    {
-      name: "tn-fitness-activities",
-      storage: createJSONStorage(() => localStorage),
+export const useActivityStore = create<ActivityStoreState>((set) => ({
+  activities: [],
+  fetchActivities: async () => {
+    try {
+      const res = await fetch('/api/activities');
+      if (res.ok) {
+        const data = await res.json();
+        set({ activities: data });
+      }
+    } catch (e) {
+      console.error("Failed to fetch activities", e);
     }
-  )
-);
+  },
+  addActivity: async (activityData) => {
+    try {
+      const res = await fetch('/api/activities', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(activityData)
+      });
+      if (res.ok) {
+        const newActivity = await res.json();
+        set((state) => ({
+          activities: [newActivity, ...state.activities],
+        }));
+      }
+    } catch (e) {
+      console.error("Failed to add activity", e);
+    }
+  },
+}));

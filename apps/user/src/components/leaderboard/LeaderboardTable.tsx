@@ -1,59 +1,70 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Participant } from "@tn/shared/data/mock";
 import Badge from "@tn/shared/components/ui/Badge";
-import Button from "@tn/shared/components/ui/Button";
-import { TrendingUp, TrendingDown, Minus, CheckCircle2, RefreshCw, Play, Square } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, CheckCircle2, ChevronUp, ChevronDown } from "lucide-react";
 
 interface LeaderboardTableProps {
   participants: Participant[];
+  isLoggedIn?: boolean;
 }
 
-export default function LeaderboardTable({ participants: initialParticipants }: LeaderboardTableProps) {
-  const [participants, setParticipants] = useState<Participant[]>(initialParticipants);
-  const [isLive, setIsLive] = useState(false);
+export default function LeaderboardTable({ participants: initialParticipants, isLoggedIn = false }: LeaderboardTableProps) {
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => {
-    setParticipants(initialParticipants);
-  }, [initialParticipants]);
+  const [sortKey, setSortKey] = useState<string>("distanceKm");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isLive) {
-      interval = setInterval(() => {
-        setParticipants((current) => {
-          // Randomly pick 1-3 participants to increment
-          const toIncrement = Math.floor(Math.random() * 3) + 1;
-          const updated = [...current];
-          
-          for (let i = 0; i < toIncrement; i++) {
-            const randomIndex = Math.floor(Math.random() * updated.length);
-            const p = updated[randomIndex];
-            updated[randomIndex] = {
-              ...p,
-              distanceKm: parseFloat((p.distanceKm + (Math.random() * 0.5 + 0.1)).toFixed(1)),
-            };
-          }
-
-          // Sort by distance and update ranks
-          updated.sort((a, b) => b.distanceKm - a.distanceKm);
-          
-          return updated.map((p, index) => {
-            const newRank = index + 4; // Because top 3 are separate
-            return {
-              ...p,
-              previousRank: p.rank !== newRank ? p.rank : p.previousRank,
-              rank: newRank,
-            };
-          });
-        });
-      }, 2500); // Update every 2.5 seconds
+  const handleSort = (key: string) => {
+    if (sortKey === key) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortKey(key);
+      setSortOrder(key === "name" ? "asc" : "desc");
     }
-    return () => clearInterval(interval);
-  }, [isLive]);
+  };
+
+  const renderSortIcon = (columnKey: string) => {
+    const isActive = sortKey === columnKey;
+    return (
+      <div className="inline-flex flex-col items-center justify-center ml-1">
+        <ChevronUp className={`w-3 h-3 -mb-[3px] ${isActive && sortOrder === "asc" ? "text-primary opacity-100" : "opacity-40"}`} />
+        <ChevronDown className={`w-3 h-3 ${isActive && sortOrder === "desc" ? "text-primary opacity-100" : "opacity-40"}`} />
+      </div>
+    );
+  };
+
+  const sortedParticipants = useMemo(() => {
+    const sorted = [...initialParticipants];
+    sorted.sort((a, b) => {
+      const aVal = a[sortKey as keyof Participant];
+      const bVal = b[sortKey as keyof Participant];
+
+      if (typeof aVal === "string" && typeof bVal === "string") {
+        return sortOrder === "asc"
+          ? aVal.localeCompare(bVal)
+          : bVal.localeCompare(aVal);
+      }
+
+      if (typeof aVal === "number" && typeof bVal === "number") {
+        return sortOrder === "asc"
+          ? aVal - bVal
+          : bVal - aVal;
+      }
+
+      if (Array.isArray(aVal) && Array.isArray(bVal)) {
+        return sortOrder === "asc"
+          ? aVal.length - bVal.length
+          : bVal.length - aVal.length;
+      }
+
+      return 0;
+    });
+
+    return sorted;
+  }, [initialParticipants, sortKey, sortOrder]);
+
 
   return (
     <div>
@@ -61,30 +72,29 @@ export default function LeaderboardTable({ participants: initialParticipants }: 
         <h3 className="text-xl font-bold text-text-primary-light dark:text-text-primary-dark">
           All Participants
         </h3>
-        <Button 
-          variant={isLive ? "primary" : "outline"}
-          size="sm"
-          onClick={() => setIsLive(!isLive)}
-          className="flex items-center gap-2 transition-all duration-300"
-        >
-          {isLive ? (
-            <>
-              <RefreshCw className="w-4 h-4 animate-spin" />
-              Live Updates Active
-              <Square className="w-3 h-3 ml-1 opacity-50" />
-            </>
-          ) : (
-            <>
-              <Play className="w-4 h-4" />
-              Simulate Live Data
-            </>
-          )}
-        </Button>
+      </div>
+
+      {/* Sorting Column Headers */}
+      <div className="flex items-center gap-4 px-4 py-2 border-b border-border-light dark:border-border-dark text-[11px] font-bold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wider mb-3">
+        <button onClick={() => handleSort("rank")} className="w-10 text-center hover:text-primary transition-colors flex items-center justify-center gap-1 cursor-pointer font-bold select-none">
+          Rank {renderSortIcon("rank")}
+        </button>
+        <div className="w-10" />
+        <button onClick={() => handleSort("name")} className="flex-1 text-left hover:text-primary transition-colors flex items-center gap-1 cursor-pointer font-bold select-none">
+          Athlete {renderSortIcon("name")}
+        </button>
+        <div className="hidden md:block w-48" />
+        <button onClick={() => handleSort("streak")} className="hidden sm:flex items-center gap-1 hover:text-primary transition-colors cursor-pointer w-16 justify-center font-bold select-none">
+          Streak {renderSortIcon("streak")}
+        </button>
+        <button onClick={() => handleSort("distanceKm")} className="text-right hover:text-primary transition-colors flex items-center justify-end gap-1 cursor-pointer w-24 font-bold select-none">
+          Distance {renderSortIcon("distanceKm")}
+        </button>
       </div>
 
       <div className="space-y-2 relative">
         <AnimatePresence>
-          {participants.map((participant) => {
+          {sortedParticipants.map((participant) => {
             const rankDiff = participant.previousRank - participant.rank;
             return (
               <motion.div
@@ -93,16 +103,11 @@ export default function LeaderboardTable({ participants: initialParticipants }: 
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ 
+                transition={{
                   layout: { type: "spring", stiffness: 300, damping: 30 },
-                  duration: 0.3 
+                  duration: 0.3
                 }}
-                className={`flex items-center gap-4 p-4 rounded-xl border transition-all duration-300 group
-                  ${rankDiff > 0 && isLive ? 'bg-success/5 border-success/20 shadow-lg shadow-success/10' : 
-                    rankDiff < 0 && isLive ? 'bg-danger/5 border-danger/20' : 
-                    'bg-surface-light dark:bg-surface-dark border-border-light dark:border-border-dark hover:border-primary/30 hover:shadow-lg'
-                  }
-                `}
+                className="flex items-center gap-4 p-4 rounded-xl border transition-all duration-300 group bg-surface-light dark:bg-surface-dark border-border-light dark:border-border-dark hover:border-primary/30 hover:shadow-lg"
               >
                 {/* Rank */}
                 <div className="w-10 text-center">
@@ -111,35 +116,19 @@ export default function LeaderboardTable({ participants: initialParticipants }: 
                   </span>
                 </div>
 
-                {/* Rank Change */}
-                <div className="w-8 flex justify-center">
-                  {rankDiff > 0 ? (
-                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex items-center gap-0.5 text-success">
-                      <TrendingUp className="w-3.5 h-3.5" />
-                      <span className="text-xs font-medium">{rankDiff}</span>
-                    </motion.div>
-                  ) : rankDiff < 0 ? (
-                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex items-center gap-0.5 text-danger">
-                      <TrendingDown className="w-3.5 h-3.5" />
-                      <span className="text-xs font-medium">{Math.abs(rankDiff)}</span>
-                    </motion.div>
-                  ) : (
-                    <Minus className="w-3.5 h-3.5 text-text-secondary-light dark:text-text-secondary-dark" />
-                  )}
-                </div>
 
                 {/* Avatar */}
                 <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-800 flex-shrink-0 relative">
-                  <img
-                    src={participant.avatar}
-                    alt={participant.name}
-                    className="w-full h-full object-cover"
-                  />
-                  {rankDiff > 0 && isLive && (
-                    <motion.div 
-                      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                      className="absolute inset-0 bg-success/20" 
+                  {isLoggedIn ? (
+                    <img
+                      src={participant.avatar}
+                      alt={participant.name}
+                      className="w-full h-full object-cover"
                     />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-surface-light-alt dark:bg-surface-dark-alt text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark">
+                      ?
+                    </div>
                   )}
                 </div>
 
@@ -147,15 +136,15 @@ export default function LeaderboardTable({ participants: initialParticipants }: 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-text-primary-light dark:text-text-primary-dark truncate">
-                      {participant.name}
+                      {isLoggedIn ? participant.name : `Participant #${participant.id}`}
                     </span>
-                    {participant.isVerified && (
+                    {isLoggedIn && participant.isVerified && (
                       <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />
                     )}
                   </div>
                   <div className="flex items-center gap-2 text-xs text-text-secondary-light dark:text-text-secondary-dark">
                     <span>{participant.district}</span>
-                    {participant.college && (
+                    {isLoggedIn && participant.college && (
                       <>
                         <span>•</span>
                         <span className="truncate">{participant.college}</span>
@@ -164,16 +153,8 @@ export default function LeaderboardTable({ participants: initialParticipants }: 
                   </div>
                 </div>
 
-                {/* Streak */}
-                <div className="hidden sm:flex items-center gap-1">
-                  <span className="text-sm">🔥</span>
-                  <span className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark">
-                    {participant.streak}
-                  </span>
-                </div>
-
                 {/* Badges */}
-                <div className="hidden md:flex items-center gap-1">
+                <div className="hidden md:flex flex-wrap items-center gap-1 w-48">
                   {participant.badges.slice(0, 2).map((badge, bi) => (
                     <Badge key={bi} variant="default" size="sm">
                       {badge}
@@ -181,11 +162,19 @@ export default function LeaderboardTable({ participants: initialParticipants }: 
                   ))}
                 </div>
 
+                {/* Streak */}
+                <div className="hidden sm:flex items-center justify-center gap-1 w-16">
+                  <span className="text-sm">🔥</span>
+                  <span className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark">
+                    {participant.streak}
+                  </span>
+                </div>
+
                 {/* Distance */}
                 <div className="text-right">
-                  <motion.span 
+                  <motion.span
                     key={participant.distanceKm}
-                    initial={isLive ? { scale: 1.2, color: "#10b981" } : {}}
+                    initial={{}}
                     animate={{ scale: 1, color: "var(--color-primary)" }}
                     transition={{ duration: 0.5 }}
                     className="text-lg font-bold text-primary inline-block"

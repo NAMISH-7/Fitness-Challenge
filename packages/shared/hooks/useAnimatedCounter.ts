@@ -7,9 +7,9 @@ export function useAnimatedCounter(
   duration: number = 2000,
   startOnView: boolean = true,
   decimals: number = 0
-): number {
+) {
   const [count, setCount] = useState(0);
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLElement>(null);
   const hasAnimated = useRef(false);
 
   useEffect(() => {
@@ -28,11 +28,8 @@ export function useAnimatedCounter(
       { threshold: 0.3 }
     );
 
-    // We need to observe the parent element
-    const el = document.querySelector(`[data-counter="${end}"]`);
-    if (el) observer.observe(el);
+    if (ref.current) observer.observe(ref.current);
 
-    // If already animated, just update immediately when end changes
     if (hasAnimated.current) {
       setCount(end);
     }
@@ -46,7 +43,6 @@ export function useAnimatedCounter(
     const step = (currentTime: number) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      // Ease out cubic
       const eased = 1 - Math.pow(1 - progress, 3);
       setCount(Number((eased * end).toFixed(decimals)));
       if (progress < 1) {
@@ -56,5 +52,5 @@ export function useAnimatedCounter(
     requestAnimationFrame(step);
   }
 
-  return count;
+  return { count, ref };
 }

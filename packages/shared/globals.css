@@ -51,26 +51,177 @@
   --animate-slide-up: slide-up 0.6s ease-out;
   --animate-fade-in: fade-in 0.5s ease-out;
   --animate-count-up: count-up 1s ease-out;
+  --animate-ticker: ticker 40s linear infinite;
+  --animate-shimmer: shimmer 2s ease-in-out infinite;
+  --animate-breathe: breathe 4s ease-in-out infinite;
+  --animate-pulse-ring: pulse-ring 2s ease-out infinite;
+  --animate-slide-in-right: slide-in-right 0.5s ease-out;
+  --animate-bounce-in: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
   @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
+
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-20px);
+    }
   }
+
   @keyframes glow-pulse {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 1; }
+
+    0%,
+    100% {
+      opacity: 0.4;
+    }
+
+    50% {
+      opacity: 1;
+    }
   }
+
   @keyframes slide-up {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
+
   @keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
   }
+
   @keyframes count-up {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes ticker {
+    0% {
+      transform: translateX(0);
+    }
+
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% center;
+    }
+
+    100% {
+      background-position: 200% center;
+    }
+  }
+
+  @keyframes breathe {
+
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.6;
+    }
+
+    50% {
+      transform: scale(1.05);
+      opacity: 1;
+    }
+  }
+
+  @keyframes pulse-ring {
+    0% {
+      transform: scale(0.8);
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+
+  @keyframes slide-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes bounce-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+
+    70% {
+      transform: scale(0.9);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes rotate-slow {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes float-up {
+    0% {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+
+    10% {
+      opacity: 1;
+    }
+
+    90% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+      transform: translateY(-60px) scale(1);
+    }
   }
 }
 
@@ -89,12 +240,15 @@
   ::-webkit-scrollbar {
     width: 6px;
   }
+
   ::-webkit-scrollbar-track {
     background: transparent;
   }
+
   ::-webkit-scrollbar-thumb {
     @apply bg-primary/30 rounded-full;
   }
+
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-primary/50;
   }
@@ -107,6 +261,7 @@
     background: rgba(255, 255, 255, 0.7);
     border-color: rgba(255, 255, 255, 0.3);
   }
+
   .dark .glass {
     background: rgba(18, 18, 26, 0.7);
     border-color: rgba(255, 255, 255, 0.08);
@@ -117,14 +272,17 @@
     background: rgba(255, 255, 255, 0.8);
     border-color: rgba(226, 232, 240, 0.8);
   }
+
   .dark .glass-card {
     background: rgba(18, 18, 26, 0.6);
     border-color: rgba(255, 255, 255, 0.06);
   }
+
   .glass-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
   }
+
   .dark .glass-card:hover {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   }
@@ -132,6 +290,7 @@
   .glow {
     box-shadow: 0 0 20px rgba(6, 182, 212, 0.15), 0 0 60px rgba(6, 182, 212, 0.05);
   }
+
   .dark .glow {
     box-shadow: 0 0 20px rgba(6, 182, 212, 0.25), 0 0 60px rgba(6, 182, 212, 0.1);
   }
@@ -139,6 +298,7 @@
   .glow-strong {
     box-shadow: 0 0 30px rgba(6, 182, 212, 0.3), 0 0 80px rgba(6, 182, 212, 0.15);
   }
+
   .dark .glow-strong {
     box-shadow: 0 0 30px rgba(6, 182, 212, 0.4), 0 0 80px rgba(6, 182, 212, 0.2);
   }
@@ -162,5 +322,144 @@
 
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* === NEW: Neon Effects === */
+  .neon-border {
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.1), inset 0 0 15px rgba(6, 182, 212, 0.05);
+  }
+
+  .dark .neon-border {
+    border-color: rgba(6, 182, 212, 0.4);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.15), inset 0 0 20px rgba(6, 182, 212, 0.05);
+  }
+
+  .neon-glow {
+    box-shadow:
+      0 0 5px rgba(6, 182, 212, 0.4),
+      0 0 20px rgba(6, 182, 212, 0.2),
+      0 0 40px rgba(6, 182, 212, 0.1);
+  }
+
+  .dark .neon-glow {
+    box-shadow:
+      0 0 5px rgba(6, 182, 212, 0.6),
+      0 0 20px rgba(6, 182, 212, 0.3),
+      0 0 40px rgba(6, 182, 212, 0.15),
+      0 0 80px rgba(6, 182, 212, 0.05);
+  }
+
+  .neon-text {
+    text-shadow: 0 0 10px rgba(6, 182, 212, 0.5), 0 0 30px rgba(6, 182, 212, 0.2);
+  }
+
+  .dark .neon-text {
+    text-shadow: 0 0 10px rgba(6, 182, 212, 0.7), 0 0 40px rgba(6, 182, 212, 0.3);
+  }
+
+  /* === NEW: Gradient Borders === */
+  .gradient-border {
+    position: relative;
+  }
+
+  .gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, #06B6D4, #8B5CF6);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .gradient-border:hover::before {
+    opacity: 1;
+  }
+
+  /* === NEW: Live Indicator === */
+  .live-dot {
+    @apply relative;
+  }
+
+  .live-dot::before {
+    content: "";
+    @apply absolute w-full h-full rounded-full bg-success animate-ping;
+    animation-duration: 1.5s;
+  }
+
+  /* === NEW: Ticker Scroll === */
+  .ticker-track {
+    display: flex;
+    animation: ticker 40s linear infinite;
+    width: max-content;
+  }
+
+  .ticker-track:hover {
+    animation-play-state: paused;
+  }
+
+  /* === NEW: Particle Background === */
+  .particle-bg {
+    background-image:
+      radial-gradient(circle at 20% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 40% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
+  }
+
+  /* === NEW: Progress Bar Glow === */
+  .progress-glow {
+    box-shadow: 0 0 8px currentColor, 0 0 20px currentColor;
+  }
+
+  /* === NEW: Rarity Glow Effects === */
+  .rarity-common {
+    box-shadow: 0 0 10px rgba(148, 163, 184, 0.3);
+  }
+
+  .rarity-rare {
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+  }
+
+  .rarity-epic {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+  }
+
+  .rarity-legendary {
+    box-shadow: 0 0 25px rgba(245, 158, 11, 0.6), 0 0 50px rgba(245, 158, 11, 0.2);
+  }
+
+  .dark .rarity-common {
+    box-shadow: 0 0 15px rgba(148, 163, 184, 0.2);
+  }
+
+  .dark .rarity-rare {
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
+  }
+
+  .dark .rarity-epic {
+    box-shadow: 0 0 25px rgba(139, 92, 246, 0.6);
+  }
+
+  .dark .rarity-legendary {
+    box-shadow: 0 0 30px rgba(245, 158, 11, 0.7), 0 0 60px rgba(245, 158, 11, 0.3);
+  }
+
+  /* === NEW: Gradient Backgrounds for sections === */
+  .gradient-mesh {
+    background:
+      radial-gradient(ellipse at 10% 20%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
+  }
+
+  /* === NEW: Hide browser default password reveal icons === */
+  input[type="password"]::-ms-reveal,
+  input[type="password"]::-ms-clear {
+    display: none;
   }
 }

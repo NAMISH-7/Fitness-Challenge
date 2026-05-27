@@ -1,0 +1,167 @@
+[
+  {
+    "id": "prop-1779861621273",
+    "title": "healthcorp",
+    "description": "jrnjn",
+    "date": "",
+    "location": "TN Statewide",
+    "type": "sponsor",
+    "organizer": "priya",
+    "status": "approved",
+    "submittedAt": "2026-05-27T06:00:21.273Z"
+  },
+  {
+    "id": "prop-1779863783878",
+    "title": "lorem ipsum",
+    "description": "lorem ipsum",
+    "date": "2026-05-14",
+    "location": "lorem ipsum",
+    "type": "campus",
+    "organizer": "Student Athlete",
+    "status": "approved",
+    "submittedAt": "2026-05-27T06:36:23.879Z"
+  },
+  {
+    "id": "prop-1779863871689",
+    "title": "lorem ipsum",
+    "description": "lorem ipsum",
+    "date": "",
+    "location": "TN Statewide",
+    "type": "sponsor",
+    "organizer": "lorem ipsum",
+    "status": "approved",
+    "submittedAt": "2026-05-27T06:37:51.689Z"
+  },
+  {
+    "id": "prop-1779864283023",
+    "title": "loremipsum",
+    "description": "loremipsum",
+    "date": "2026-05-30",
+    "location": "loremipsum",
+    "type": "awareness",
+    "organizer": "Student Athlete",
+    "status": "approved",
+    "submittedAt": "2026-05-27T06:44:43.023Z"
+  },
+  {
+    "id": "prop-1779864302965",
+    "title": "loremipsum1",
+    "description": "loremipsum",
+    "date": "2026-06-05",
+    "location": "loremipsum",
+    "type": "campus",
+    "organizer": "Student Athlete",
+    "status": "rejected",
+    "submittedAt": "2026-05-27T06:45:02.965Z"
+  },
+  {
+    "id": "prop-1779864703940",
+    "title": "loremipsum",
+    "description": "loremipsum",
+    "date": "2026-05-30",
+    "location": "loremipsum",
+    "type": "campus",
+    "organizer": "Student Athlete",
+    "status": "rejected",
+    "submittedAt": "2026-05-27T06:51:43.940Z"
+  },
+  {
+    "id": "prop-1779864721439",
+    "title": "loremipsum1",
+    "description": "loremipsum",
+    "date": "2026-05-29",
+    "location": "loremipsum",
+    "type": "campus",
+    "organizer": "Student Athlete",
+    "status": "approved",
+    "submittedAt": "2026-05-27T06:52:01.439Z"
+  },
+  {
+    "id": "prop-1779864742237",
+    "title": "loremipsum",
+    "description": "loremipsum",
+    "date": "",
+    "location": "TN Statewide",
+    "type": "sponsor",
+    "organizer": "loremipsum",
+    "status": "approved",
+    "submittedAt": "2026-05-27T06:52:22.237Z"
+  },
+  {
+    "id": "prop-1779864764563",
+    "title": "loremipsum1",
+    "description": "loremipsum",
+    "date": "",
+    "location": "TN Statewide",
+    "type": "sponsor",
+    "organizer": "loremipsum",
+    "status": "rejected",
+    "submittedAt": "2026-05-27T06:52:44.563Z"
+  },
+  {
+    "id": "prop-1779865611415",
+    "title": "or wai instead of giving toggles",
+    "description": "## Error Type\nBuild Error\n\n## Error Message\nExpected '</', got 'jsx text'\n\n## Build Output\n./apps/admin/src/app/page.tsx:551:38\nExpected '</', got 'jsx text'\n  549 |                               </button>\n  550 |                             </div>\n> 551 |                         </motion.div>\n      |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n> 552 |                       ))\n      | ^^^^^^^^^^^^^^^^^^^^^^^^\n> 553 |                     ) : (\n      | ^^^^^^^^^^^^^^^^^^^^^^^^^\n> 554 |                       <div className=\"text-center py-4 text-text-secondary-light/60 dark:text-text-secondary-...\n      | ^^^^^^^^^^^^^^^^^^^^^^\n  555 |                         🎉 All events processed!\n  556 |                       </div>\n  557 |                     )}\n\nParsing ecmascript source code failed\n\nImport traces:\n  Client Component Browser:\n    ./apps/admin/src/app/page.tsx [Client Component Browser]\n    ./apps/admin/src/app/page.tsx [Server Component]\n\n  Client Component SSR:\n    ./apps/admin/src/app/page.tsx [Client Component SSR]\n    ./apps/admin/src/app/page.tsx [Server Component]\n\nNext.js version: 16.2.6 (Turbopack)\n",
+    "date": "2026-05-30",
+    "location": "## Error Type Build Error  ## Error Message Expected '</', got 'jsx text'  ## Build Output ./apps/admin/src/app/page.tsx:551:38 Expected '</', got 'jsx text'   549 |                               </button>   550 |                             </div> > 551 |                         </motion.div>       |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ > 552 |                       ))       | ^^^^^^^^^^^^^^^^^^^^^^^^ > 553 |                     ) : (       | ^^^^^^^^^^^^^^^^^^^^^^^^^ > 554 |                       <div className=\"text-center py-4 text-text-secondary-light/60 dark:text-text-secondary-...       | ^^^^^^^^^^^^^^^^^^^^^^   555 |                         🎉 All events processed!   556 |                       </div>   557 |                     )}  Parsing ecmascript source code failed  Import traces:   Client Component Browser:     ./apps/admin/src/app/page.tsx [Client Component Browser]     ./apps/admin/src/app/page.tsx [Server Component]    Client Component SSR:     ./apps/admin/src/app/page.tsx [Client Component SSR]     ./apps/admin/src/app/page.tsx [Server Component]  Next.js version: 16.2.6 (Turbopack)",
+    "type": "campus",
+    "organizer": "Student Athlete",
+    "status": "rejected",
+    "submittedAt": "2026-05-27T07:06:51.415Z"
+  },
+  {
+    "id": "prop-1779865745839",
+    "title": "loremipsum",
+    "description": "loremipsumloremipsum",
+    "date": "",
+    "location": "TN Statewide",
+    "type": "sponsor",
+    "organizer": "loremipsum",
+    "status": "rejected",
+    "submittedAt": "2026-05-27T07:09:05.839Z"
+  },
+  {
+    "id": "prop-1779877046404",
+    "title": "loremipsum",
+    "description": "loremipsum",
+    "date": "2026-05-29",
+    "location": "loremipsum",
+    "type": "campus",
+    "organizer": "Student Athlete",
+    "status": "addressed",
+    "submittedAt": "2026-05-27T10:17:26.404Z"
+  },
+  {
+    "id": "prop-1779877074840",
+    "title": "loremipsum",
+    "description": "loremipsum",
+    "date": "",
+    "location": "TN Statewide",
+    "type": "sponsor",
+    "organizer": "loremipsum",
+    "status": "addressed",
+    "submittedAt": "2026-05-27T10:17:54.840Z"
+  },
+  {
+    "id": "prop-1779904334513",
+    "title": "lroe",
+    "description": "lroe",
+    "date": "2026-06-03",
+    "location": "lroe",
+    "type": "campus",
+    "organizer": "Student Athlete",
+    "status": "addressed",
+    "submittedAt": "2026-05-27T17:52:14.513Z"
+  },
+  {
+    "id": "prop-1779904379550",
+    "title": "lorem",
+    "description": "lorem",
+    "date": "",
+    "location": "TN Statewide",
+    "type": "sponsor",
+    "organizer": "lorem",
+    "status": "addressed",
+    "submittedAt": "2026-05-27T17:52:59.550Z"
+  }
+]

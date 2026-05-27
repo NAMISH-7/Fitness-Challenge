@@ -1,5 +1,6 @@
 # dependencies
 node_modules
+**/node_modules/
 .pnp
 .pnp.js
 
@@ -8,17 +9,25 @@ coverage
 
 # next.js
 .next/
+**/.next/
 out/
+**/out/
 build
+**/build/
 
-# misc
+# misc & OS garbage
 .DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
 *.pem
 
-# debug
+# debug & logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.eslintcache
 
 # local env files
 .env*.local
@@ -30,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# IDEs & Editor caches
+.vscode/
+.idea/
+
+# AI Agent Caches
+.gemini/
+**/CLAUDE.md
+**/AGENTS.md

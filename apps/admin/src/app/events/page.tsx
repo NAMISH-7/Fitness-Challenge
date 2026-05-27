@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { Plus, Calendar, MapPin, Users, Edit3, Trash2, AlertTriangle } from "lucide-react";
@@ -8,16 +8,74 @@ import AdminSidebar from "@/components/layout/AdminSidebar";
 import Card from "@tn/shared/components/ui/Card";
 import Button from "@tn/shared/components/ui/Button";
 import Badge from "@tn/shared/components/ui/Badge";
-import { events } from "@tn/shared/data/mock";
+import { useAdminDataStore } from "@/store/useAdminDataStore";
+import type { Event } from "@tn/shared/data/mock";
+
+interface PendingEventProposal {
+  id: string;
+  type: string;
+  status: string;
+  title?: string;
+  organizer?: string;
+  repName?: string;
+  location?: string;
+  description?: string;
+}
 
 export default function EventsPage() {
-  const [localEvents, setLocalEvents] = useState(events);
+  const { events, initialize } = useAdminDataStore();
+  const [localEvents, setLocalEvents] = useState<Event[]>(events);
   const [eventToDelete, setEventToDelete] = useState<string | null>(null);
+  const [pendingApprovals, setPendingApprovals] = useState<PendingEventProposal[]>([]);
 
-  const handleDelete = () => {
+  useEffect(() => {
+    setTimeout(() => {
+      setLocalEvents(events);
+    }, 0);
+  }, [events]);
+
+  const fetchApprovals = () => {
+    fetch("/api/proposals", { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => {
+        const rawList = data as PendingEventProposal[];
+        setPendingApprovals(rawList.filter((p) => p.type !== "sponsor" && p.status === "pending"));
+      })
+      .catch(err => console.error("Failed to fetch approvals", err));
+  };
+
+  useEffect(() => {
+    fetchApprovals();
+  }, []);
+
+  const handleApprove = async (id: string, isApproved: boolean) => {
+    try {
+      await fetch("/api/proposals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: isApproved ? "approved" : "rejected" }),
+      });
+      fetchApprovals();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleDelete = async () => {
     if (eventToDelete) {
+      // Optimistic UI update
       setLocalEvents(prev => prev.filter(e => e.id !== eventToDelete));
+      const idToDelete = eventToDelete;
       setEventToDelete(null);
+
+      try {
+        await fetch(`/api/events?id=${idToDelete}`, {
+          method: "DELETE"
+        });
+        await initialize();
+      } catch (err) {
+        console.error("Failed to delete event", err);
+      }
     }
   };
 
@@ -117,6 +175,49 @@ export default function EventsPage() {
           ))}
           </AnimatePresence>
         </div>
+
+        {/* Pending Event Approvals Section */}
+        {pendingApprovals.length > 0 && (
+          <div className="mt-16">
+            <h2 className="text-xl font-bold text-text-primary-light dark:text-text-primary-dark mb-6 flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-warning" />
+              Pending Event Approvals
+            </h2>
+            <div className="bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-2xl overflow-hidden">
+              <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                <table className="w-full text-sm text-left">
+                  <thead className="bg-surface-light-alt dark:bg-surface-dark-alt text-text-secondary-light dark:text-text-secondary-dark border-b border-border-light dark:border-border-dark">
+                    <tr>
+                      <th className="px-6 py-4 font-semibold">Event Title</th>
+                      <th className="px-6 py-4 font-semibold">Organizer</th>
+                      <th className="px-6 py-4 font-semibold">Location</th>
+                      <th className="px-6 py-4 font-semibold text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border-light/50 dark:divide-border-dark/50">
+                    {pendingApprovals.map((approval) => (
+                      <tr key={approval.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors">
+                        <td className="px-6 py-4 font-medium text-text-primary-light dark:text-text-primary-dark">
+                          {approval.title}
+                        </td>
+                        <td className="px-6 py-4 text-text-secondary-light dark:text-text-secondary-dark">
+                          {approval.organizer || "Student Rep"}
+                        </td>
+                        <td className="px-6 py-4 text-text-secondary-light dark:text-text-secondary-dark">
+                          {approval.location}
+                        </td>
+                        <td className="px-6 py-4 text-right space-x-2">
+                          <Button size="sm" onClick={() => handleApprove(approval.id, true)}>Approve</Button>
+                          <Button size="sm" variant="outline" className="text-danger border-danger hover:bg-danger/10" onClick={() => handleApprove(approval.id, false)}>Reject</Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Delete Confirmation Modal */}

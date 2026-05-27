@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { participants, collegeRankings, currentUser } from "@tn/shared/data/mock";
+import { collegeRankings, currentUser, Participant } from "@tn/shared/data/mock";
 import { useActivityStore } from "@/store/useActivityStore";
 import TopThree from "@/components/leaderboard/TopThree";
 import LeaderboardTable from "@/components/leaderboard/LeaderboardTable";
@@ -16,11 +17,40 @@ import { Trophy, TrendingUp, TrendingDown, Minus } from "lucide-react";
 // TODO: [FUTURE] Add anti-cheat verification badges
 
 export default function LeaderboardPage() {
+  const router = useRouter();
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState("individual");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("All Districts");
+  const [participants, setParticipants] = useState<Participant[]>([]);
 
-  const { activities } = useActivityStore();
+  useEffect(() => {
+    fetch('/api/users')
+      .then(res => res.json())
+      .then(data => setParticipants(data))
+      .catch(err => console.error(err));
+  }, []);
+
+  useEffect(() => {
+    const isAuth = sessionStorage.getItem("user_auth") === "true";
+    if (!isAuth) {
+      document.cookie = "user_auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      router.push("/auth");
+    } else {
+      setTimeout(() => {
+        setIsAuthenticated(true);
+        setIsCheckingAuth(false);
+      }, 0);
+    }
+  }, [router]);
+
+  const { activities, fetchActivities } = useActivityStore();
+
+  useEffect(() => {
+    fetchActivities();
+  }, [fetchActivities]);
+
   const totalLoggedDistance = activities.reduce((acc, curr) => acc + curr.distance, 0);
   const displayTotalDistance = currentUser.distanceKm + totalLoggedDistance;
 
@@ -43,7 +73,7 @@ export default function LeaderboardPage() {
       ...p,
       rank: index + 1,
     }));
-  }, [displayTotalDistance]);
+  }, [participants, displayTotalDistance]);
 
   const filteredParticipants = useMemo(() => {
     return dynamicParticipants.filter((p) => {
@@ -52,7 +82,7 @@ export default function LeaderboardPage() {
       const matchesDistrict = selectedDistrict === "All Districts" || p.district === selectedDistrict;
       return matchesSearch && matchesDistrict;
     });
-  }, [searchQuery, selectedDistrict]);
+  }, [searchQuery, selectedDistrict, dynamicParticipants]);
 
   const filteredColleges = useMemo(() => {
     return collegeRankings.filter((c) => {
@@ -61,7 +91,15 @@ export default function LeaderboardPage() {
       const matchesDistrict = selectedDistrict === "All Districts" || c.district === selectedDistrict;
       return matchesSearch && matchesDistrict;
     });
-  }, [searchQuery, selectedDistrict]);
+  }, [searchQuery, selectedDistrict, collegeRankings]);
+
+  if (isCheckingAuth || !isAuthenticated) {
+    return (
+      <div className="min-h-screen pt-24 pb-16 px-4 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-24 pb-16 px-4">
@@ -105,10 +143,10 @@ export default function LeaderboardPage() {
             {filteredParticipants.length >= 3 && searchQuery === "" && selectedDistrict === "All Districts" ? (
               <>
                 <TopThree participants={filteredParticipants} />
-                <LeaderboardTable participants={filteredParticipants.slice(3)} />
+                <LeaderboardTable participants={filteredParticipants.slice(3)} isLoggedIn={true} />
               </>
             ) : (
-              <LeaderboardTable participants={filteredParticipants} />
+              <LeaderboardTable participants={filteredParticipants} isLoggedIn={true} />
             )}
             {filteredParticipants.length === 0 && (
               <div className="text-center py-12 text-text-secondary-light dark:text-text-secondary-dark">
@@ -174,10 +212,10 @@ export default function LeaderboardPage() {
             {filteredParticipants.length >= 3 && searchQuery === "" && selectedDistrict === "All Districts" ? (
               <>
                 <TopThree participants={filteredParticipants} />
-                <LeaderboardTable participants={filteredParticipants.slice(3)} />
+                <LeaderboardTable participants={filteredParticipants.slice(3)} isLoggedIn={true} />
               </>
             ) : (
-              <LeaderboardTable participants={filteredParticipants} />
+              <LeaderboardTable participants={filteredParticipants} isLoggedIn={true} />
             )}
           </>
         )}

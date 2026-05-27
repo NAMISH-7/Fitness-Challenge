@@ -1,0 +1,947 @@
+{
+  "users": [
+    {
+      "id": "user-1",
+      "name": "Arun Selvam",
+      "district": "Chennai",
+      "college": "Anna University",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Arun%20Selvam",
+      "distanceKm": 305.1,
+      "steps": 450578,
+      "streak": 30,
+      "rank": 1,
+      "previousRank": 2,
+      "badges": [
+        "🏃 Marathon Runner",
+        "🔥 Streak Master",
+        "⭐ Top 10",
+        "🎖️ Veteran"
+      ],
+      "joinedDate": "2025-01-06",
+      "isVerified": true
+    },
+    {
+      "id": "user-4",
+      "name": "Divya Krishnan",
+      "district": "Tiruchirappalli",
+      "college": "NIT Trichy",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Divya%20Krishnan",
+      "distanceKm": 302.4,
+      "steps": 455405,
+      "streak": 29,
+      "rank": 2,
+      "previousRank": 1,
+      "badges": [
+        "👑 District King",
+        "🔥 Streak Master",
+        "🏃 Marathon Runner"
+      ],
+      "joinedDate": "2025-10-09",
+      "isVerified": true
+    },
+    {
+      "id": "user-5",
+      "name": "Surya Rajan",
+      "district": "Salem",
+      "college": "VIT Vellore",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Surya%20Rajan",
+      "distanceKm": 301.9,
+      "steps": 424565,
+      "streak": 31,
+      "rank": 3,
+      "previousRank": 3,
+      "badges": [
+        "🔥 Streak Master",
+        "⚡ Speed Demon"
+      ],
+      "joinedDate": "2025-07-15",
+      "isVerified": true
+    },
+    {
+      "id": "user-2",
+      "name": "Priya Durai",
+      "district": "Coimbatore",
+      "college": "IIT Madras",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Priya%20Durai",
+      "distanceKm": 297.8,
+      "steps": 446602,
+      "streak": 31,
+      "rank": 4,
+      "previousRank": 5,
+      "badges": [
+        "👑 District King",
+        "🎯 Goal Crusher",
+        "💎 Diamond Walker"
+      ],
+      "joinedDate": "2025-03-23",
+      "isVerified": true
+    },
+    {
+      "id": "user-3",
+      "name": "Karthik Iyer",
+      "district": "Madurai",
+      "college": "PSG College of Technology",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Karthik%20Iyer",
+      "distanceKm": 291.4,
+      "steps": 450349,
+      "streak": 34,
+      "rank": 5,
+      "previousRank": 6,
+      "badges": [
+        "🌟 Rising Star"
+      ],
+      "joinedDate": "2025-03-14",
+      "isVerified": true
+    },
+    {
+      "id": "user-6",
+      "name": "Meena Krishnan",
+      "district": "Tirunelveli",
+      "college": "SRM University",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Meena%20Krishnan",
+      "distanceKm": 288.7,
+      "steps": 432579,
+      "streak": 29,
+      "rank": 6,
+      "previousRank": 6,
+      "badges": [
+        "🦅 Eagle Pacer",
+        "🔥 Streak Master",
+        "🏃 Marathon Runner"
+      ],
+      "joinedDate": "2025-12-12",
+      "isVerified": true
+    },
+    {
+      "id": "user-10",
+      "name": "Nithya Babu",
+      "district": "Dindigul",
+      "college": "Amrita University",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Nithya%20Babu",
+      "distanceKm": 277.6,
+      "steps": 400842,
+      "streak": 26,
+      "rank": 7,
+      "previousRank": 7,
+      "badges": [
+        "🏃 Marathon Runner",
+        "🌟 Rising Star"
+      ],
+      "joinedDate": "2025-12-02",
+      "isVerified": true
+    },
+    {
+      "id": "user-8",
+      "name": "Lakshmi Narayanan",
+      "district": "Vellore",
+      "college": "Madras Christian College",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Lakshmi%20Narayanan",
+      "distanceKm": 273.2,
+      "steps": 414248,
+      "streak": 28,
+      "rank": 8,
+      "previousRank": 10,
+      "badges": [
+        "🔥 Streak Master",
+        "🏆 Champion",
+        "🎖️ Veteran"
+      ],
+      "joinedDate": "2025-02-27",
+      "isVerified": true
+    },
+    {
+      "id": "user-9",
+      "name": "Vijay Kumar",
+      "district": "Thoothukudi",
+      "college": "SSN College",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Vijay%20Kumar",
+      "distanceKm": 270.6,
+      "steps": 408222,
+      "streak": 31,
+      "rank": 9,
+      "previousRank": 9,
+      "badges": [
+        "🔥 Streak Master"
+      ],
+      "joinedDate": "2025-02-07",
+      "isVerified": true
+    },
+    {
+      "id": "user-11",
+      "name": "Ganesh Narayanan",
+      "district": "Thanjavur",
+      "college": "Thiagarajar College",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Ganesh%20Narayanan",
+      "distanceKm": 266.6,
+      "steps": 400381,
+      "streak": 29,
+      "rank": 10,
+      "previousRank": 12,
+      "badges": [
+        "⭐ Top 10"
+      ],
+      "joinedDate": "2025-07-19",
+      "isVerified": true
+    },
+    {
+      "id": "user-12",
+      "name": "Deepa Sundaram",
+      "district": "Ranipet",
+      "college": "Kongu Engineering College",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Deepa%20Sundaram",
+      "distanceKm": 258.4,
+      "steps": 400594,
+      "streak": 28,
+      "rank": 11,
+      "previousRank": 11,
+      "badges": [
+        "🔥 Streak Master",
+        "🏃 Marathon Runner"
+      ],
+      "joinedDate": "2025-09-19",
+      "isVerified": true
+    },
+    {
+      "id": "user-15",
+      "name": "Mukesh Nathan",
+      "district": "Namakkal",
+      "college": "Bharathiar University",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Mukesh%20Nathan",
+      "distanceKm": 248.1,
+      "steps": 381617,
+      "streak": 24,
+      "rank": 12,
+      "previousRank": 12,
+      "badges": [
+        "🏆 Champion",
+        "⭐ Top 10",
+        "💎 Diamond Walker"
+      ],
+      "joinedDate": "2025-08-22",
+      "isVerified": true
+    },
+    {
+      "id": "user-7",
+      "name": "Karthik Subramanian",
+      "district": "Chennai",
+      "college": "Anna University",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Felix",
+      "distanceKm": 247.3,
+      "steps": 385000,
+      "streak": 23,
+      "rank": 13,
+      "previousRank": 9,
+      "badges": [
+        "🔥 Streak Master",
+        "⭐ Top 10",
+        "🎯 Goal Crusher",
+        "💪 Iron Will"
+      ],
+      "joinedDate": "2025-01-15",
+      "isVerified": true
+    },
+    {
+      "id": "user-13",
+      "name": "Raj Sundaram",
+      "district": "Sivaganga",
+      "college": "Karunya University",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Raj%20Sundaram",
+      "distanceKm": 246.2,
+      "steps": 388346,
+      "streak": 27,
+      "rank": 14,
+      "previousRank": 13,
+      "badges": [
+        "🏆 Champion"
+      ],
+      "joinedDate": "2025-07-16",
+      "isVerified": false
+    },
+    {
+      "id": "user-14",
+      "name": "Anitha Kumar",
+      "district": "Karur",
+      "college": "SASTRA University",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Anitha%20Kumar",
+      "distanceKm": 244.9,
+      "steps": 374127,
+      "streak": 25,
+      "rank": 15,
+      "previousRank": 14,
+      "badges": [
+        "🌟 Rising Star",
+        "🔥 Streak Master",
+        "⚡ Speed Demon"
+      ],
+      "joinedDate": "2025-01-14",
+      "isVerified": true
+    },
+    {
+      "id": "user-16",
+      "name": "Kavitha Babu",
+      "district": "Tiruppur",
+      "college": "Anna University",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Kavitha%20Babu",
+      "distanceKm": 235.3,
+      "steps": 351155,
+      "streak": 27,
+      "rank": 16,
+      "previousRank": 16,
+      "badges": [
+        "🏆 Champion",
+        "⭐ Top 10",
+        "🎖️ Veteran"
+      ],
+      "joinedDate": "2025-05-01",
+      "isVerified": true
+    },
+    {
+      "id": "user-19",
+      "name": "Prasad Subramanian",
+      "district": "Villupuram",
+      "college": "NIT Trichy",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Prasad%20Subramanian",
+      "distanceKm": 234.9,
+      "steps": 348719,
+      "streak": 22,
+      "rank": 17,
+      "previousRank": 17,
+      "badges": [
+        "💪 Iron Will",
+        "🔥 Streak Master",
+        "👑 District King",
+        "🎯 Goal Crusher"
+      ],
+      "joinedDate": "2025-02-12",
+      "isVerified": true
+    },
+    {
+      "id": "user-18",
+      "name": "Bharathi Rajan",
+      "district": "Kanchipuram",
+      "college": "PSG College of Technology",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Bharathi%20Rajan",
+      "distanceKm": 230.4,
+      "steps": 357849,
+      "streak": 22,
+      "rank": 18,
+      "previousRank": 19,
+      "badges": [
+        "🔥 Streak Master",
+        "🦅 Eagle Pacer",
+        "👑 District King"
+      ],
+      "joinedDate": "2025-01-25",
+      "isVerified": true
+    },
+    {
+      "id": "user-17",
+      "name": "Suresh Subramanian",
+      "district": "Cuddalore",
+      "college": "IIT Madras",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Suresh%20Subramanian",
+      "distanceKm": 228.3,
+      "steps": 346490,
+      "streak": 25,
+      "rank": 19,
+      "previousRank": 19,
+      "badges": [
+        "💎 Diamond Walker",
+        "💪 Iron Will",
+        "⭐ Top 10",
+        "🏆 Champion"
+      ],
+      "joinedDate": "2025-03-01",
+      "isVerified": true
+    },
+    {
+      "id": "user-20",
+      "name": "Revathi Babu",
+      "district": "Nagapattinam",
+      "college": "VIT Vellore",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Revathi%20Babu",
+      "distanceKm": 225,
+      "steps": 328045,
+      "streak": 24,
+      "rank": 20,
+      "previousRank": 20,
+      "badges": [
+        "🏃 Marathon Runner"
+      ],
+      "joinedDate": "2025-03-20",
+      "isVerified": true
+    },
+    {
+      "id": "user-23",
+      "name": "Kumar Venkatesh",
+      "district": "Madurai",
+      "college": "Madras Christian College",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Kumar%20Venkatesh",
+      "distanceKm": 220.2,
+      "steps": 316238,
+      "streak": 23,
+      "rank": 21,
+      "previousRank": 21,
+      "badges": [
+        "💪 Iron Will",
+        "🔥 Streak Master"
+      ],
+      "joinedDate": "2025-06-18",
+      "isVerified": true
+    },
+    {
+      "id": "user-24",
+      "name": "Sangeetha Babu",
+      "district": "Tiruchirappalli",
+      "college": "SSN College",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Sangeetha%20Babu",
+      "distanceKm": 215.2,
+      "steps": 300635,
+      "streak": 23,
+      "rank": 22,
+      "previousRank": 21,
+      "badges": [
+        "🔥 Streak Master"
+      ],
+      "joinedDate": "2025-09-19",
+      "isVerified": false
+    },
+    {
+      "id": "user-21",
+      "name": "Senthil Venkatesh",
+      "district": "Chennai",
+      "college": "SRM University",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Senthil%20Venkatesh",
+      "distanceKm": 210.1,
+      "steps": 315702,
+      "streak": 24,
+      "rank": 23,
+      "previousRank": 22,
+      "badges": [
+        "💪 Iron Will",
+        "🔥 Streak Master",
+        "🏆 Champion",
+        "⭐ Top 10"
+      ],
+      "joinedDate": "2025-09-08",
+      "isVerified": true
+    },
+    {
+      "id": "user-22",
+      "name": "Vani Narayanan",
+      "district": "Coimbatore",
+      "college": "Loyola College",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Vani%20Narayanan",
+      "distanceKm": 206.8,
+      "steps": 304720,
+      "streak": 23,
+      "rank": 24,
+      "previousRank": 24,
+      "badges": [
+        "🎖️ Veteran",
+        "🎯 Goal Crusher",
+        "🌟 Rising Star"
+      ],
+      "joinedDate": "2025-01-02",
+      "isVerified": true
+    },
+    {
+      "id": "user-25",
+      "name": "Manoj Narayanan",
+      "district": "Salem",
+      "college": "Amrita University",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Manoj%20Narayanan",
+      "distanceKm": 197.9,
+      "steps": 303220,
+      "streak": 18,
+      "rank": 25,
+      "previousRank": 24,
+      "badges": [
+        "🌟 Rising Star",
+        "👑 District King",
+        "⚡ Speed Demon"
+      ],
+      "joinedDate": "2025-12-13",
+      "isVerified": false
+    },
+    {
+      "id": "user-26",
+      "name": "Pavithra Rajan",
+      "district": "Tirunelveli",
+      "college": "Thiagarajar College",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Pavithra%20Rajan",
+      "distanceKm": 187.6,
+      "steps": 277715,
+      "streak": 18,
+      "rank": 26,
+      "previousRank": 25,
+      "badges": [
+        "🎖️ Veteran",
+        "🦅 Eagle Pacer",
+        "🔥 Streak Master",
+        "⭐ Top 10"
+      ],
+      "joinedDate": "2025-11-22",
+      "isVerified": true
+    },
+    {
+      "id": "user-28",
+      "name": "Janani Iyer",
+      "district": "Vellore",
+      "college": "Karunya University",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Janani%20Iyer",
+      "distanceKm": 186.1,
+      "steps": 267050,
+      "streak": 17,
+      "rank": 27,
+      "previousRank": 26,
+      "badges": [
+        "💪 Iron Will",
+        "👑 District King",
+        "⚡ Speed Demon"
+      ],
+      "joinedDate": "2025-10-16",
+      "isVerified": true
+    },
+    {
+      "id": "user-27",
+      "name": "Ashok Murugan",
+      "district": "Erode",
+      "college": "Kongu Engineering College",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Ashok%20Murugan",
+      "distanceKm": 184.6,
+      "steps": 277193,
+      "streak": 21,
+      "rank": 28,
+      "previousRank": 28,
+      "badges": [
+        "👑 District King"
+      ],
+      "joinedDate": "2025-11-03",
+      "isVerified": true
+    },
+    {
+      "id": "user-29",
+      "name": "Dinesh Babu",
+      "district": "Thoothukudi",
+      "college": "SASTRA University",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Dinesh%20Babu",
+      "distanceKm": 184.2,
+      "steps": 256819,
+      "streak": 19,
+      "rank": 29,
+      "previousRank": 29,
+      "badges": [
+        "👑 District King"
+      ],
+      "joinedDate": "2025-09-12",
+      "isVerified": true
+    },
+    {
+      "id": "user-31",
+      "name": "Bala Sundaram",
+      "district": "Thanjavur",
+      "college": "Anna University",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Bala%20Sundaram",
+      "distanceKm": 179.8,
+      "steps": 256161,
+      "streak": 16,
+      "rank": 30,
+      "previousRank": 30,
+      "badges": [
+        "🌟 Rising Star",
+        "🏆 Champion"
+      ],
+      "joinedDate": "2025-11-13",
+      "isVerified": false
+    },
+    {
+      "id": "user-30",
+      "name": "Ramya Babu",
+      "district": "Dindigul",
+      "college": "Bharathiar University",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Ramya%20Babu",
+      "distanceKm": 179.6,
+      "steps": 271379,
+      "streak": 16,
+      "rank": 31,
+      "previousRank": 30,
+      "badges": [
+        "💪 Iron Will"
+      ],
+      "joinedDate": "2025-11-17",
+      "isVerified": true
+    },
+    {
+      "id": "user-32",
+      "name": "Sathya Murugan",
+      "district": "Ranipet",
+      "college": "IIT Madras",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Sathya%20Murugan",
+      "distanceKm": 171.2,
+      "steps": 252294,
+      "streak": 18,
+      "rank": 32,
+      "previousRank": 32,
+      "badges": [
+        "💎 Diamond Walker",
+        "🦅 Eagle Pacer"
+      ],
+      "joinedDate": "2025-06-07",
+      "isVerified": true
+    },
+    {
+      "id": "user-33",
+      "name": "Hari Narayanan",
+      "district": "Sivaganga",
+      "college": "PSG College of Technology",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Hari%20Narayanan",
+      "distanceKm": 166.1,
+      "steps": 233832,
+      "streak": 18,
+      "rank": 33,
+      "previousRank": 34,
+      "badges": [
+        "💎 Diamond Walker"
+      ],
+      "joinedDate": "2025-04-27",
+      "isVerified": false
+    },
+    {
+      "id": "user-35",
+      "name": "Vignesh Murugan",
+      "district": "Namakkal",
+      "college": "VIT Vellore",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Vignesh%20Murugan",
+      "distanceKm": 160.6,
+      "steps": 230221,
+      "streak": 14,
+      "rank": 34,
+      "previousRank": 34,
+      "badges": [
+        "🎖️ Veteran"
+      ],
+      "joinedDate": "2025-03-08",
+      "isVerified": true
+    },
+    {
+      "id": "user-34",
+      "name": "Thenmozhi Durai",
+      "district": "Karur",
+      "college": "NIT Trichy",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Thenmozhi%20Durai",
+      "distanceKm": 157.4,
+      "steps": 243024,
+      "streak": 15,
+      "rank": 35,
+      "previousRank": 36,
+      "badges": [
+        "💪 Iron Will",
+        "🎯 Goal Crusher",
+        "🌟 Rising Star"
+      ],
+      "joinedDate": "2025-07-28",
+      "isVerified": false
+    },
+    {
+      "id": "user-36",
+      "name": "Saranya Krishnan",
+      "district": "Tiruppur",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Saranya%20Krishnan",
+      "distanceKm": 152.6,
+      "steps": 232254,
+      "streak": 14,
+      "rank": 36,
+      "previousRank": 35,
+      "badges": [
+        "🔥 Streak Master",
+        "🦅 Eagle Pacer",
+        "💪 Iron Will",
+        "👑 District King"
+      ],
+      "joinedDate": "2025-08-25",
+      "isVerified": true
+    },
+    {
+      "id": "user-38",
+      "name": "Nandhini Rajan",
+      "district": "Kanchipuram",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Nandhini%20Rajan",
+      "distanceKm": 141.8,
+      "steps": 212994,
+      "streak": 12,
+      "rank": 37,
+      "previousRank": 37,
+      "badges": [
+        "🔥 Streak Master"
+      ],
+      "joinedDate": "2025-03-21",
+      "isVerified": false
+    },
+    {
+      "id": "user-40",
+      "name": "Gayathri Durai",
+      "district": "Nagapattinam",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Gayathri%20Durai",
+      "distanceKm": 139,
+      "steps": 185180,
+      "streak": 11,
+      "rank": 38,
+      "previousRank": 39,
+      "badges": [
+        "🔥 Streak Master",
+        "💪 Iron Will",
+        "⚡ Speed Demon",
+        "🎖️ Veteran"
+      ],
+      "joinedDate": "2025-09-21",
+      "isVerified": true
+    },
+    {
+      "id": "user-37",
+      "name": "Prabhu Selvam",
+      "district": "Cuddalore",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Prabhu%20Selvam",
+      "distanceKm": 138.9,
+      "steps": 203435,
+      "streak": 16,
+      "rank": 39,
+      "previousRank": 38,
+      "badges": [
+        "⚡ Speed Demon",
+        "🎖️ Veteran",
+        "🦅 Eagle Pacer",
+        "🎯 Goal Crusher"
+      ],
+      "joinedDate": "2025-01-17",
+      "isVerified": true
+    },
+    {
+      "id": "user-39",
+      "name": "Arul Krishnan",
+      "district": "Villupuram",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Arul%20Krishnan",
+      "distanceKm": 135.3,
+      "steps": 201541,
+      "streak": 12,
+      "rank": 40,
+      "previousRank": 39,
+      "badges": [
+        "👑 District King",
+        "⭐ Top 10",
+        "🎖️ Veteran"
+      ],
+      "joinedDate": "2025-05-26",
+      "isVerified": true
+    },
+    {
+      "id": "user-42",
+      "name": "Swathi Narayanan",
+      "district": "Coimbatore",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Swathi%20Narayanan",
+      "distanceKm": 134.4,
+      "steps": 182028,
+      "streak": 11,
+      "rank": 41,
+      "previousRank": 40,
+      "badges": [
+        "💎 Diamond Walker",
+        "🔥 Streak Master"
+      ],
+      "joinedDate": "2025-12-08",
+      "isVerified": true
+    },
+    {
+      "id": "user-41",
+      "name": "Logesh Pandian",
+      "district": "Chennai",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Logesh%20Pandian",
+      "distanceKm": 123.5,
+      "steps": 177619,
+      "streak": 12,
+      "rank": 42,
+      "previousRank": 41,
+      "badges": [
+        "🔥 Streak Master",
+        "🎖️ Veteran",
+        "⚡ Speed Demon"
+      ],
+      "joinedDate": "2025-12-11",
+      "isVerified": true
+    },
+    {
+      "id": "user-44",
+      "name": "Keerthana Narayanan",
+      "district": "Tiruchirappalli",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Keerthana%20Narayanan",
+      "distanceKm": 121,
+      "steps": 163276,
+      "streak": 9,
+      "rank": 43,
+      "previousRank": 42,
+      "badges": [
+        "💎 Diamond Walker"
+      ],
+      "joinedDate": "2025-08-16",
+      "isVerified": false
+    },
+    {
+      "id": "user-43",
+      "name": "Mohan Kumar",
+      "district": "Madurai",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Mohan%20Kumar",
+      "distanceKm": 114.2,
+      "steps": 173705,
+      "streak": 9,
+      "rank": 44,
+      "previousRank": 45,
+      "badges": [
+        "💪 Iron Will",
+        "💎 Diamond Walker",
+        "🎖️ Veteran"
+      ],
+      "joinedDate": "2025-09-21",
+      "isVerified": true
+    },
+    {
+      "id": "user-45",
+      "name": "Naveen Sundaram",
+      "district": "Salem",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Naveen%20Sundaram",
+      "distanceKm": 111.2,
+      "steps": 150080,
+      "streak": 9,
+      "rank": 45,
+      "previousRank": 44,
+      "badges": [
+        "🏃 Marathon Runner",
+        "🎯 Goal Crusher",
+        "⚡ Speed Demon"
+      ],
+      "joinedDate": "2025-03-03",
+      "isVerified": false
+    },
+    {
+      "id": "user-47",
+      "name": "Siva Nathan",
+      "district": "Erode",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Siva%20Nathan",
+      "distanceKm": 106.1,
+      "steps": 129797,
+      "streak": 10,
+      "rank": 46,
+      "previousRank": 45,
+      "badges": [
+        "🔥 Streak Master",
+        "🏃 Marathon Runner",
+        "🏆 Champion",
+        "⭐ Top 10"
+      ],
+      "joinedDate": "2025-07-07",
+      "isVerified": true
+    },
+    {
+      "id": "user-46",
+      "name": "Pooja Iyer",
+      "district": "Tirunelveli",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Pooja%20Iyer",
+      "distanceKm": 104.2,
+      "steps": 151212,
+      "streak": 8,
+      "rank": 47,
+      "previousRank": 47,
+      "badges": [
+        "🦅 Eagle Pacer"
+      ],
+      "joinedDate": "2025-05-20",
+      "isVerified": false
+    },
+    {
+      "id": "user-48",
+      "name": "Suganya Venkatesh",
+      "district": "Vellore",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Suganya%20Venkatesh",
+      "distanceKm": 99.2,
+      "steps": 124173,
+      "streak": 7,
+      "rank": 48,
+      "previousRank": 48,
+      "badges": [
+        "🎯 Goal Crusher"
+      ],
+      "joinedDate": "2025-11-14",
+      "isVerified": true
+    },
+    {
+      "id": "user-49",
+      "name": "Harish Iyer",
+      "district": "Thoothukudi",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Harish%20Iyer",
+      "distanceKm": 89.8,
+      "steps": 114302,
+      "streak": 10,
+      "rank": 49,
+      "previousRank": 50,
+      "badges": [
+        "💪 Iron Will",
+        "⭐ Top 10",
+        "🏃 Marathon Runner"
+      ],
+      "joinedDate": "2025-11-13",
+      "isVerified": false
+    },
+    {
+      "id": "user-50",
+      "name": "Madhu Nathan",
+      "district": "Dindigul",
+      "avatar": "https://api.dicebear.com/9.x/avataaars/svg?seed=Madhu%20Nathan",
+      "distanceKm": 84.1,
+      "steps": 133242,
+      "streak": 9,
+      "rank": 50,
+      "previousRank": 49,
+      "badges": [
+        "👑 District King",
+        "💎 Diamond Walker",
+        "⚡ Speed Demon",
+        "🏆 Champion"
+      ],
+      "joinedDate": "2025-02-26",
+      "isVerified": false
+    }
+  ],
+  "activities": [
+    {
+      "type": "Run",
+      "distance": 7,
+      "date": "2026-05-27",
+      "id": "act-1779904425124-uzdxyms",
+      "timestamp": 1779904425124,
+      "userId": "user-7"
+    },
+    {
+      "type": "Run",
+      "distance": 12,
+      "date": "2026-05-27",
+      "id": "act-1779876978370-glwec4t",
+      "timestamp": 1779876978370,
+      "userId": "user-7"
+    },
+    {
+      "type": "Run",
+      "distance": 12,
+      "date": "2026-05-27",
+      "id": "act-1779863601940-mumzs9q",
+      "timestamp": 1779863601940,
+      "userId": "user-7"
+    },
+    {
+      "type": "Run",
+      "distance": 12,
+      "date": "2026-05-27",
+      "id": "act-1779860829417-rf2hz4q",
+      "timestamp": 1779860829417,
+      "userId": "user-7"
+    }
+  ]
+}

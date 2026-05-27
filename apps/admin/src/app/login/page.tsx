@@ -18,8 +18,10 @@ export default function LoginPage() {
 
     // Mock authentication delay
     setTimeout(() => {
+      // Set sessionStorage flag (auto-clears when tab/window closes)
+      sessionStorage.setItem("admin_auth", "true");
       // Set a simple cookie to indicate authentication
-      document.cookie = "admin_auth=true; path=/; max-age=86400";
+      document.cookie = "admin_auth=true; path=/";
       
       // Force a full reload to the dashboard so middleware picks up the cookie
       window.location.href = "/";

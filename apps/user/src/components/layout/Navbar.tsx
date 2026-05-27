@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, ComponentType } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Trophy, User, Calendar, Info, LayoutDashboard, Zap, Bell, Settings, Activity, MessageSquare, HelpCircle, LogOut } from "lucide-react";
 import { useEventStore } from "@/store/useEventStore";
-import { events } from "@tn/shared/data/mock";
+import { useDataStore } from "@/store/useDataStore";
 import ThemeToggle from "@tn/shared/components/ui/ThemeToggle";
 import { cn } from "@tn/shared/lib/utils";
 
@@ -22,20 +22,30 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    // Check for mock auth cookie on mount
-    if (document.cookie.includes("user_auth=true")) {
-      setIsAuthenticated(true);
+    // Check sessionStorage on mount — auto-clears when tab/window closes
+    if (sessionStorage.getItem("user_auth") === "true") {
+      setTimeout(() => {
+        setIsAuthenticated(true);
+      }, 0);
+    } else {
+      document.cookie = "user_auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     }
   }, []);
+
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
   const notificationRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
 
-  const { registeredEventIds, readNotificationIds, markAsRead, markAllAsRead } = useEventStore();
+  const { registeredEventIds, readNotificationIds, markAsRead, markAllAsRead, initialize } = useEventStore();
+  const { events, initialize: initData } = useDataStore();
+
+  useEffect(() => {
+    initialize();
+    initData();
+  }, [initialize, initData]);
 
   const notifications = registeredEventIds.map(id => {
     const event = events.find(e => e.id === id);
@@ -47,19 +57,16 @@ export default function Navbar() {
       return { id: event.id, title: event.title, message: `Upcoming on ${event.date}`, type: "info", icon: Calendar };
     }
     return null;
-  }).filter(Boolean);
+  }).filter((n): n is { id: string, title: string, message: string, type: string, icon: typeof Activity } => n !== null);
 
-  const unreadCount = notifications.filter((n: { id: string } | null) => n && !readNotificationIds.includes(n.id)).length;
+  const unreadCount = notifications.filter((n) => n && !readNotificationIds.includes(n.id)).length;
 
   const handleLogout = () => {
     setIsProfileOpen(false);
     setIsAuthenticated(false);
-    document.cookie = "user_auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    
-    // Redirect to home if on a protected route
-    if (pathname.startsWith("/profile") || pathname.startsWith("/dashboard")) {
-      router.push("/");
-    }
+    sessionStorage.removeItem("user_auth");
+    document.cookie = "user_auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    window.location.href = "/";
   };
 
 
@@ -98,7 +105,7 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            {navLinks.map((link) => {
+            {navLinks.filter(link => link.href !== "/leaderboard" || isAuthenticated).map((link) => {
               const isActive = pathname === link.href;
               return (
                 <Link
@@ -185,7 +192,7 @@ export default function Navbar() {
                     </div>
                     <div className="max-h-[300px] overflow-y-auto">
                       {notifications.length > 0 ? (
-                        notifications.map((notif: { id: string, icon: any, type: string, title: string, message: string }) => {
+                        notifications.map((notif: { id: string, icon: ComponentType<{ className?: string }>, type: string, title: string, message: string }) => {
                           const Icon = notif.icon;
                           const isUnread = !readNotificationIds.includes(notif.id);
                           return (
@@ -269,25 +276,25 @@ export default function Navbar() {
                     </div>
 
                     <div className="py-2 border-t border-border-light dark:border-border-dark">
-                      <button onClick={() => setIsProfileOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary-light dark:text-text-primary-dark hover:bg-surface-light-alt dark:hover:bg-surface-dark-alt transition-colors">
+                      <Link href="/settings" onClick={() => setIsProfileOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary-light dark:text-text-primary-dark hover:bg-surface-light-alt dark:hover:bg-surface-dark-alt transition-colors">
                         <Settings className="w-4 h-4 text-text-secondary-light dark:text-text-secondary-dark" />
                         <span>Settings</span>
-                      </button>
-                      <button onClick={() => setIsProfileOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary-light dark:text-text-primary-dark hover:bg-surface-light-alt dark:hover:bg-surface-dark-alt transition-colors">
+                      </Link>
+                      <Link href="/system-status" onClick={() => setIsProfileOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary-light dark:text-text-primary-dark hover:bg-surface-light-alt dark:hover:bg-surface-dark-alt transition-colors">
                         <Activity className="w-4 h-4 text-text-secondary-light dark:text-text-secondary-dark" />
                         <span>System Status</span>
-                      </button>
+                      </Link>
                     </div>
 
                     <div className="py-2 border-t border-border-light dark:border-border-dark">
-                      <button onClick={() => setIsProfileOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary-light dark:text-text-primary-dark hover:bg-surface-light-alt dark:hover:bg-surface-dark-alt transition-colors">
+                      <Link href="/help-support" onClick={() => setIsProfileOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary-light dark:text-text-primary-dark hover:bg-surface-light-alt dark:hover:bg-surface-dark-alt transition-colors">
                         <HelpCircle className="w-4 h-4 text-text-secondary-light dark:text-text-secondary-dark" />
                         <span>Help & Support</span>
-                      </button>
-                      <button onClick={() => setIsProfileOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary-light dark:text-text-primary-dark hover:bg-surface-light-alt dark:hover:bg-surface-dark-alt transition-colors">
+                      </Link>
+                      <Link href="/feedback" onClick={() => setIsProfileOpen(false)} className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-primary-light dark:text-text-primary-dark hover:bg-surface-light-alt dark:hover:bg-surface-dark-alt transition-colors">
                         <MessageSquare className="w-4 h-4 text-text-secondary-light dark:text-text-secondary-dark" />
                         <span>Send Feedback</span>
-                      </button>
+                      </Link>
                     </div>
 
                     <div className="py-2 border-t border-border-light dark:border-border-dark bg-surface-light-alt dark:bg-surface-dark-alt">
@@ -314,7 +321,7 @@ export default function Navbar() {
             className="md:hidden border-t border-border-light dark:border-border-dark glass overflow-hidden"
           >
             <div className="px-4 py-3 space-y-1">
-              {navLinks.map((link) => {
+              {navLinks.filter(link => link.href !== "/leaderboard" || isAuthenticated).map((link) => {
                 const isActive = pathname === link.href;
                 const Icon = link.icon;
                 return (

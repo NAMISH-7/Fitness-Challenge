@@ -1,0 +1,109 @@
+[
+  {
+    "id": "sp-1",
+    "name": "TN Sports Authority",
+    "tier": "platinum",
+    "logo": "🏛️",
+    "status": "active",
+    "joinDate": "15 Jan 2025",
+    "duration": "5 Years",
+    "description": "Official government partner for all district-level sports events and marathons. We are committed to fostering a culture of health and wellness across Tamil Nadu. Through our state-wide initiatives, we provide robust infrastructure support for over 38 districts, ensuring safe and accessible marathon routes for all participants. Our vision is to build a healthier, more active community where fitness is a daily habit for everyone.",
+    "fullDescription": "Official government partner for all district-level sports events and marathons. We are committed to fostering a culture of health and wellness across Tamil Nadu. Through our state-wide initiatives, we provide robust infrastructure support for over 38 districts, ensuring safe and accessible marathon routes for all participants. Our vision is to build a healthier, more active community where fitness is a daily habit for everyone. By partnering with local authorities and sports clubs, we aim to deliver world-class sporting facilities and events. Our comprehensive programs also include specialized training for youth, free medical check-ups at all major events, and funding for grassroots sports development. We believe that by investing in our state's athletic infrastructure today, we are paving the way for the champions of tomorrow. Join us as we Move Tamil Nadu Forward, one step at a time.",
+    "contribution": "₹1,50,00,000 + Infrastructure Support"
+  },
+  {
+    "id": "sp-2",
+    "name": "HealthFirst Insurance",
+    "tier": "platinum",
+    "logo": "🏥",
+    "status": "active",
+    "joinDate": "20 Feb 2025",
+    "duration": "3 Years",
+    "description": "Providing comprehensive health coverage and medical camps for all registered participants.",
+    "fullDescription": "HealthFirst Insurance is dedicated to the well-being of every participant. They are setting up emergency medical camps at all major event locations and providing free health checkups for the top 1000 leaderboard participants.",
+    "contribution": "₹75,00,000 + Medical Kits"
+  },
+  {
+    "id": "sp-3",
+    "name": "FitGear India",
+    "tier": "gold",
+    "logo": "👟",
+    "status": "active",
+    "joinDate": "10 Mar 2025",
+    "duration": "1 Year",
+    "description": "Supplying official merchandise, t-shirts, and running gear for marathon finishers.",
+    "fullDescription": "FitGear India is outfitting our champions with premium, sweat-wicking activewear. Every marathon finisher receives an exclusive FitGear finisher's kit, and they are sponsoring custom running shoes for our top 10 weekly champions.",
+    "contribution": "₹25,00,000 + Merchandise"
+  },
+  {
+    "id": "sp-4",
+    "name": "NutriLife Foods",
+    "tier": "gold",
+    "logo": "🥗",
+    "status": "active",
+    "joinDate": "05 Apr 2025",
+    "duration": "2 Years",
+    "description": "Providing energy bars, hydration stations, and nutritional guidance across all major events.",
+    "fullDescription": "NutriLife Foods ensures our participants stay energized and hydrated. They are deploying 500+ hydration stations across the state and offering personalized diet plans for college students participating in the campus challenges.",
+    "contribution": "₹30,00,000"
+  },
+  {
+    "id": "sp-5",
+    "name": "TechRun Wearables",
+    "tier": "silver",
+    "logo": "⌚",
+    "status": "active",
+    "joinDate": "12 May 2025",
+    "duration": "1 Year",
+    "description": "Offering discounted smartwatches to verified college participants to encourage daily tracking.",
+    "fullDescription": "TechRun Wearables believes in data-driven fitness. They are providing heavy discounts to students and giving away 500 premium smartwatches to those who maintain a 30-day activity streak.",
+    "contribution": "₹10,00,000 + 500 Smartwatches"
+  },
+  {
+    "id": "sp-6",
+    "name": "Chennai Runners Club",
+    "tier": "silver",
+    "logo": "🏃",
+    "status": "pending",
+    "joinDate": "01 Jun 2025",
+    "duration": "1 Year",
+    "description": "A local community club organizing pacing teams and volunteer support for Sunday runs.",
+    "fullDescription": "The Chennai Runners Club is the backbone of our weekend events. With over 2000 active volunteers, they provide pacing teams, organize warm-up sessions, and ensure a smooth running experience for beginners and pros alike.",
+    "contribution": "Volunteer Support"
+  },
+  {
+    "id": "sp-7",
+    "name": "EcoSport Drinks",
+    "tier": "silver",
+    "logo": "🥤",
+    "status": "active",
+    "joinDate": "15 Jun 2025",
+    "duration": "6 Months",
+    "description": "Supplying eco-friendly, biodegradable water cups and electrolyte drinks for the summer series.",
+    "fullDescription": "EcoSport Drinks is committed to a greener Tamil Nadu. They provide 100% biodegradable cups and their signature zero-sugar electrolyte drinks to keep participants refreshed during the sweltering summer challenges.",
+    "contribution": "₹5,00,000 + Beverages"
+  },
+  {
+    "id": "sp-8",
+    "name": "MedPlus Pharmacy",
+    "tier": "gold",
+    "logo": "💊",
+    "status": "expired",
+    "joinDate": "10 Jan 2024",
+    "duration": "1 Year",
+    "description": "Provided first-aid stations and emergency medical vehicles during the 2024 fitness drive.",
+    "fullDescription": "MedPlus Pharmacy was a crucial partner during our inaugural 2024 fitness drive, offering emergency medical vehicles and fully-equipped first-aid stations at all major marathon finish lines.",
+    "contribution": "₹20,00,000"
+  },
+  {
+    "id": "sp-1779877942005",
+    "name": "loremipsum",
+    "logo": "🏢",
+    "tier": "silver",
+    "status": "expired",
+    "joinDate": "2026-05-27",
+    "duration": "1",
+    "description": "wjrvbjwnsjbhwuh",
+    "contribution": "₹30,00,000"
+  }
+]

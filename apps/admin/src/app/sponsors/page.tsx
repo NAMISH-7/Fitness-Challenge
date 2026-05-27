@@ -1,40 +1,97 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, ShieldCheck, AlertCircle, Calendar, Clock, Landmark, Info, X, Pencil } from "lucide-react";
 import AdminSidebar from "@/components/layout/AdminSidebar";
 import Card from "@tn/shared/components/ui/Card";
 import Button from "@tn/shared/components/ui/Button";
 import Badge from "@tn/shared/components/ui/Badge";
-import { sponsors, type Sponsor } from "@tn/shared/data/mock";
+import { useAdminDataStore } from "@/store/useAdminDataStore";
+import type { Sponsor } from "@tn/shared/data/mock";
 import AddSponsorModal from "@/components/sponsors/AddSponsorModal";
 
-export default function SponsorsPage() {
+interface PendingSponsorProposal {
+  id: string;
+  type: string;
+  status: string;
+  title?: string;
+  organizer?: string;
+  tier?: string;
+  pledge?: string;
+  description?: string;
+}
+
+export default function AdminSponsors() {
+  const { sponsors, initialize } = useAdminDataStore();
   const [localSponsors, setLocalSponsors] = useState<Sponsor[]>(sponsors);
   const [selectedSponsor, setSelectedSponsor] = useState<Sponsor | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingSponsor, setEditingSponsor] = useState<Sponsor | null>(null);
+  const [pendingApprovals, setPendingApprovals] = useState<PendingSponsorProposal[]>([]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLocalSponsors(sponsors);
+    }, 0);
+  }, [sponsors]);
+
+  const fetchApprovals = () => {
+    fetch("/api/proposals", { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => {
+        const rawList = data as PendingSponsorProposal[];
+        setPendingApprovals(rawList.filter((p) => p.type === "sponsor" && p.status === "pending"));
+      })
+      .catch(err => console.error("Failed to fetch sponsor approvals", err));
+  };
+
+  useEffect(() => {
+    fetchApprovals();
+  }, []);
+
+  const handleApprove = async (id: string, isApproved: boolean) => {
+    try {
+      await fetch("/api/proposals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: isApproved ? "approved" : "rejected" }),
+      });
+      fetchApprovals();
+      if (isApproved) await initialize();
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const platinum = localSponsors.filter((s) => s.tier === "platinum");
   const gold = localSponsors.filter((s) => s.tier === "gold");
   const silver = localSponsors.filter((s) => s.tier === "silver");
 
-  const handleSaveSponsor = (sponsorData: Omit<Sponsor, "id">, id?: string) => {
-    if (id) {
-      // Edit mode
-      const index = sponsors.findIndex((s) => s.id === id);
+  const handleSaveSponsor = async (sponsorData: Omit<Sponsor, "id">, id?: string) => {
+    try {
+      const newSponsor = { id: id || `sp-${Date.now()}`, ...sponsorData };
+      
+      // Optimistic update
+      const index = localSponsors.findIndex((s) => s.id === newSponsor.id);
       if (index !== -1) {
-        sponsors[index] = { ...sponsors[index], ...sponsorData };
+        const updated = [...localSponsors];
+        updated[index] = newSponsor as Sponsor;
+        setLocalSponsors(updated);
+      } else {
+        setLocalSponsors([...localSponsors, newSponsor as Sponsor]);
       }
-    } else {
-      // Add mode
-      const newSponsor = { id: `sp-${Date.now()}`, ...sponsorData };
-      if (!sponsors.find(s => s.id === newSponsor.id)) {
-        sponsors.push(newSponsor); 
-      }
+
+      await fetch("/api/sponsors", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newSponsor)
+      });
+      
+      await initialize();
+    } catch (err) {
+      console.error("Failed to save sponsor", err);
     }
-    setLocalSponsors([...sponsors]);
   };
 
   const renderTier = (title: string, data: typeof sponsors, tierColor: string) => (
@@ -117,6 +174,52 @@ export default function SponsorsPage() {
           {renderTier("Gold", gold, "bg-amber-400")}
           {renderTier("Silver", silver, "bg-gray-400")}
         </Card>
+
+        {/* Pending Sponsor Approvals Section */}
+        {pendingApprovals.length > 0 && (
+          <div className="mt-16">
+            <h2 className="text-xl font-bold text-text-primary-light dark:text-text-primary-dark mb-6 flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-warning" />
+              Pending Sponsor Approvals
+            </h2>
+            <div className="bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-2xl overflow-hidden">
+              <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                <table className="w-full text-sm text-left">
+                  <thead className="bg-surface-light-alt dark:bg-surface-dark-alt text-text-secondary-light dark:text-text-secondary-dark border-b border-border-light dark:border-border-dark">
+                    <tr>
+                      <th className="px-6 py-4 font-semibold">Company</th>
+                      <th className="px-6 py-4 font-semibold">Tier Request</th>
+                      <th className="px-6 py-4 font-semibold">Pledge</th>
+                      <th className="px-6 py-4 font-semibold text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border-light/50 dark:divide-border-dark/50">
+                    {pendingApprovals.map((approval) => (
+                      <tr key={approval.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors">
+                        <td className="px-6 py-4 font-medium text-text-primary-light dark:text-text-primary-dark">
+                          {approval.title}
+                          <div className="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-0.5">
+                            {approval.organizer}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-text-secondary-light dark:text-text-secondary-dark capitalize">
+                          {approval.tier || "Gold"}
+                        </td>
+                        <td className="px-6 py-4 text-text-secondary-light dark:text-text-secondary-dark">
+                          {approval.pledge || approval.description}
+                        </td>
+                        <td className="px-6 py-4 text-right space-x-2">
+                          <Button size="sm" onClick={() => handleApprove(approval.id, true)}>Approve</Button>
+                          <Button size="sm" variant="outline" className="text-danger border-danger hover:bg-danger/10" onClick={() => handleApprove(approval.id, false)}>Reject</Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <AnimatePresence>

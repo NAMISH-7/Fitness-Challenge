@@ -1,16 +1,26 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard, Users, Calendar, Handshake,
   BarChart3, Settings, LogOut, Zap, ChevronLeft, ChevronRight,
 } from "lucide-react";
+import { useAdminDataStore } from "@/store/useAdminDataStore";
 import ThemeToggle from "@tn/shared/components/ui/ThemeToggle";
 import { cn } from "@tn/shared/lib/utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const sidebarLinks = [
+interface SidebarLink {
+  href: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  id: string;
+  badge?: string | number;
+}
+
+const sidebarLinks: SidebarLink[] = [
   { href: "/", label: "Overview", icon: LayoutDashboard, id: "overview" },
   { href: "/users", label: "Users", icon: Users, id: "users" },
   { href: "/events", label: "Events", icon: Calendar, id: "events" },
@@ -23,8 +33,20 @@ export default function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
+  const { initialize } = useAdminDataStore();
+
+  useEffect(() => {
+    initialize();
+    
+    // Check sessionStorage on mount — auto-clears when tab/window closes
+    if (sessionStorage.getItem("admin_auth") !== "true") {
+      document.cookie = "admin_auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      router.push("/login");
+    }
+  }, [initialize, router]);
 
   const handleLogout = () => {
+    sessionStorage.removeItem("admin_auth");
     document.cookie = "admin_auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     router.push("/login");
   };
@@ -33,15 +55,15 @@ export default function AdminSidebar() {
     <aside
       className={cn(
         "fixed left-0 top-0 h-full z-50 flex flex-col",
-        "bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark",
+        "bg-surface-light dark:bg-[#0d0d15]/95 border-r border-border-light dark:border-border-dark backdrop-blur-md",
         "transition-all duration-300",
         collapsed ? "w-[72px]" : "w-64"
       )}
     >
       {/* Logo */}
-      <div className="flex items-center gap-2 px-4 h-16 border-b border-border-light dark:border-border-dark">
+      <div className="flex items-center gap-2 px-4 h-16 border-b border-border-light dark:border-border-dark bg-[#0f0f1c]/30">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-xl gradient-accent flex items-center justify-center flex-shrink-0">
+          <div className="w-9 h-9 rounded-xl gradient-accent flex items-center justify-center flex-shrink-0 shadow-lg shadow-primary/20">
             <Zap className="w-5 h-5 text-white" />
           </div>
           {!collapsed && (
@@ -53,7 +75,7 @@ export default function AdminSidebar() {
       </div>
 
       {/* Nav Links */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 px-3 py-6 space-y-1.5 overflow-y-auto">
         {sidebarLinks.map((link) => {
           const isActive = pathname === link.href;
           const Icon = link.icon;
@@ -62,16 +84,24 @@ export default function AdminSidebar() {
               key={link.id}
               href={link.href}
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
+                "relative flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-all duration-200 group",
                 isActive
-                  ? "bg-primary/10 text-primary dark:bg-primary/20"
-                  : "text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:text-text-primary-light dark:hover:text-text-primary-dark",
+                  ? "bg-primary/10 text-primary dark:bg-primary/15 border-l-2 border-primary pl-2.5 shadow-sm"
+                  : "text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-800/40 hover:text-text-primary-light dark:hover:text-text-primary-dark",
                 collapsed && "justify-center px-2"
               )}
               title={collapsed ? link.label : undefined}
             >
-              <Icon className="w-5 h-5 flex-shrink-0" />
-              {!collapsed && link.label}
+              <Icon className={cn("w-5 h-5 flex-shrink-0 transition-transform duration-200 group-hover:scale-105", isActive ? "text-primary" : "text-text-secondary-light dark:text-text-secondary-dark")} />
+              
+              <div className="flex-1 flex items-center justify-between min-w-0">
+                {!collapsed && <span className="truncate">{link.label}</span>}
+                {!collapsed && link.badge && (
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary font-bold animate-pulse">
+                    {link.badge}
+                  </span>
+                )}
+              </div>
             </Link>
           );
         })}
