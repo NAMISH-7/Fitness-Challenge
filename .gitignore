@@ -52,3 +52,6 @@ next-env.d.ts
 # Media
 *.mp4
 
+# Quick Commands Reference
+quick_commands.txt
+quick.commands
